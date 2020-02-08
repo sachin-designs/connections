@@ -1,7 +1,7 @@
 # connections
 share on git 
 
-Kindly udpdate README.md if any changes in the structure and reasone behind the changes.
+Kindly udpdate README.md if any changes in the structure and reason behind the changes.
 
 •	Source document:  Document used as source for educating each other to feed knowledge.
 •	Requirement document: To have track of all required plugins, libraries, api's so on.
