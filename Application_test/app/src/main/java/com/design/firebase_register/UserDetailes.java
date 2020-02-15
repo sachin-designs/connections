@@ -12,15 +12,17 @@ public class UserDetailes {
     UserDetailes() {
     }
 
+    // Constructor which now holds all user details once object of this class is created.
     UserDetailes(String username, String email, String pass, String place, String work, String Uid) {
         this.Username = username;
         this.Email = email;
         this.Pass = pass;
         this.Place = place;
-        this.work = this.work;
+        this.work = work;
         this.Uid=Uid;
     }
 
+    // setters and getters if we want to store each user details separately.
     public String getUsername() {
         return this.Username;
     }
