@@ -1,5 +1,6 @@
 package com.design.firebase_register;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -99,14 +100,15 @@ public class MainActivity extends AppCompatActivity {
     public void switch_activity(boolean task) {
         //switch to different activity if user is register successfully.
         if(task){
-            setContentView(R.layout.dummylayout); // switching the layout to dummylayout xml.
-
+            // switching the layout to Login xml.
+            //setContentView(R.layout.login);
             // best way to switch layout is switching to java class and setting the layout.
-            /*
-            Intent intent = new Intent(MainActivity.this, DummyActivity.class);
+
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             finish();
             startActivity(intent);
-             */
+
+
 
             // Displace tost msg as successfully registered
             Toast.makeText(this, "Registration successful for user ", Toast.LENGTH_SHORT).show();// Displace tost msg as successfully registered.
