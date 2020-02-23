@@ -45,12 +45,25 @@
         android:drawableLeft="@drawable/phoneno"
         android:hint="Phone Number" />
 
+    <EditText
+        android:id="@+id/school"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:hint="Schooling" />
+
+    <EditText
+        android:id="@+id/Place"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:hint="Place" />
 
     <Button
         android:id="@+id/button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="signUpProcess"
-        android:hint="Register"/>
+        android:hint="Register"
+        android:onClick="signUpProcess" />
 
 </LinearLayout>

@@ -55,6 +55,16 @@ public class ChatActivity extends AppCompatActivity {
         });
     }
 
+    public void connectivity(View view){
+        Intent intent = new Intent(ChatActivity.this, Connectivity.class);
+        Log.d("DB","inside connectiviy method");
+//       // intent.putExtra("name", sEmail);
+        finish();
+        Log.d("DB","inside connectiviy method2");
+        startActivity(intent);
+
+
+    }
 
     public  void logout(View view){
 

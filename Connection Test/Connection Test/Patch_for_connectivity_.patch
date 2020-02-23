@@ -1,0 +1,167 @@
+Index: Connection Test/Connection Test/app/src/main/res/layout/register_activity.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- Connection Test/Connection Test/app/src/main/res/layout/register_activity.xml	(revision 0c368130ba09246ed643c3a0afe03435ae933411)
++++ Connection Test/Connection Test/app/src/main/res/layout/register_activity.xml	(date 1582162861066)
+@@ -45,12 +45,27 @@
+         android:drawableLeft="@drawable/phoneno"
+         android:hint="Phone Number" />
+ 
++    <EditText
++        android:id="@+id/school"
++        android:layout_width="match_parent"
++        android:layout_height="wrap_content"
++        android:inputType="text"
++        android:drawableLeft=""
++        android:hint="Schooling" />
++
++    <EditText
++        android:id="@+id/Place"
++        android:layout_width="match_parent"
++        android:layout_height="wrap_content"
++        android:inputType="text"
++        android:drawableLeft=""
++        android:hint="Place" />
+ 
+     <Button
+         android:id="@+id/button"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+-        android:onClick="signUpProcess"
+-        android:hint="Register"/>
++        android:hint="Register"
++        android:onClick="signUpProcess" />
+ 
+ </LinearLayout>
+Index: Connection Test/Connection Test/app/build.gradle
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- Connection Test/Connection Test/app/build.gradle	(revision 0c368130ba09246ed643c3a0afe03435ae933411)
++++ Connection Test/Connection Test/app/build.gradle	(date 1582163145587)
+@@ -30,6 +30,7 @@
+     testImplementation 'junit:junit:4.12'
+     androidTestImplementation 'androidx.test.ext:junit:1.1.0'
+     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
++    implementation 'com.google.android.material:material:1.1.0'
+ 
+ 
+ //    implementation fileTree(dir: 'libs', include: ['*.jar'])
+Index: Connection Test/Connection Test/app/src/main/java/com/example/myapplication/ChatActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- Connection Test/Connection Test/app/src/main/java/com/example/myapplication/ChatActivity.java	(revision 0c368130ba09246ed643c3a0afe03435ae933411)
++++ Connection Test/Connection Test/app/src/main/java/com/example/myapplication/ChatActivity.java	(date 1582168417745)
+@@ -55,6 +55,12 @@
+         });
+     }
+ 
++    public void connectivity(View view){
++        Intent intent = new Intent(ChatActivity.this, Connectivity.class);
++       // intent.putExtra("name", sEmail);
++        finish();
++        startActivity(intent);
++    }
+ 
+     public  void logout(View view){
+ 
+Index: Connection Test/Connection Test/app/src/main/res/layout/chat_activity.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- Connection Test/Connection Test/app/src/main/res/layout/chat_activity.xml	(revision 0c368130ba09246ed643c3a0afe03435ae933411)
++++ Connection Test/Connection Test/app/src/main/res/layout/chat_activity.xml	(date 1582168417765)
+@@ -1,41 +1,66 @@
+ <?xml version="1.0" encoding="utf-8"?>
+-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
++<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+     xmlns:app="http://schemas.android.com/apk/res-auto"
+     xmlns:tools="http://schemas.android.com/tools"
++    android:id="@+id/linearLayout"
+     android:layout_width="match_parent"
+-    android:layout_height="match_parent"
+-    android:orientation="vertical">
++    android:layout_height="match_parent">
++
+ 
+     <ImageView
+         android:id="@+id/imageView"
+-        android:layout_width="113dp"
+-        android:layout_height="wrap_content"
++        android:layout_width="110dp"
++        android:layout_height="106dp"
+         android:scaleType="center"
+-        android:src="@drawable/userdetails" />
++        android:src="@drawable/userdetails"
++        app:layout_constraintBottom_toTopOf="@+id/textView"
++        app:layout_constraintEnd_toEndOf="parent"
++        app:layout_constraintHorizontal_bias="0.0"
++        app:layout_constraintStart_toStartOf="parent"
++        app:layout_constraintTop_toTopOf="parent" />
+ 
+     <TextView
+         android:id="@+id/textView"
+-        android:layout_width="468dp"
+-        android:layout_height="102dp"
+-
++        android:layout_width="593dp"
++        android:layout_height="135dp"
+         android:fontFamily="sans-serif-smallcaps"
+         android:text="Chat Activity"
+         android:textColor="#FA9C0A95"
+-        android:textSize="100px" />
+-
+-    <LinearLayout
+-        android:layout_width="wrap_content"
+-        android:layout_height="wrap_content"
+-        android:orientation="vertical">
+-
+-    </LinearLayout>
++        android:textSize="100px"
++        app:layout_constraintBottom_toTopOf="@+id/button1"
++        app:layout_constraintStart_toStartOf="parent"
++        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+ 
+     <Button
+         android:id="@+id/button1"
+-        android:layout_width="match_parent"
++        android:layout_width="0dp"
+         android:layout_height="wrap_content"
+-        android:layout_gravity="center"
+         android:onClick="logout"
+-        android:text="Logout" />
++        android:text="Logout"
++        app:layout_constraintBottom_toBottomOf="parent"
++        app:layout_constraintEnd_toEndOf="parent"
++        app:layout_constraintHorizontal_bias="0.0"
++        app:layout_constraintStart_toStartOf="parent"
++        app:layout_constraintTop_toTopOf="parent" />
+ 
+-</LinearLayout>
++    <com.google.android.material.floatingactionbutton.FloatingActionButton
++        android:id="@+id/floatingActionButton"
++        android:layout_width="77dp"
++        android:layout_height="76dp"
++        android:layout_margin="16dp"
++        android:layout_marginBottom="224dp"
++        android:background="@mipmap/ic_launcher_round"
++        android:clickable="true"
++        android:onClick="connectivity"
++        android:src="@drawable/ic_chat_black_24dp"
++        app:backgroundTint="@color/colorPrimary"
++        app:fabSize="normal"
++        app:layout_constraintBottom_toBottomOf="parent"
++        app:layout_constraintEnd_toEndOf="parent"
++        app:layout_constraintHorizontal_bias="0.839"
++        app:layout_constraintStart_toStartOf="@+id/button1"
++        app:layout_constraintTop_toTopOf="parent"
++        app:layout_constraintVertical_bias="0.805"
++        app:srcCompat="@color/colorAccent" />
++
++</androidx.constraintlayout.widget.ConstraintLayout>
