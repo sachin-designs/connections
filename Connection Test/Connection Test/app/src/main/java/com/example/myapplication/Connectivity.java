@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -24,71 +25,81 @@ public class Connectivity extends AppCompatActivity {
 
     private DatabaseReference databaseRef;
     private DatabaseReference dbref_cuser;
-    private Chip chip1, chip2;
+    private Chip chip;
     ObjectMapper oMapper = new ObjectMapper();
     Map<String, Object> Muser;
     String Schip1,Schip2;
-    String cuser;
-    String cplace,cschool;
+    ChipGroup Gchip;
+    String search, Sdata;
     TextView connect_view;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.connectivity);
-        Log.d("DB","inside connectiviy class");
-        databaseRef= FirebaseDatabase.getInstance().getReference().child("Register");
-        chip1 = (Chip) findViewById(R.id.chip1);
-        chip2 = (Chip) findViewById(R.id.chip2);
-        FirebaseUser user= FirebaseAuth.getInstance().getCurrentUser();
-        final String userid=user.getUid();
-        connect_view=(TextView)findViewById(R.id.Connect_view);
-        Schip1=chip1.getText().toString();
-        Schip2=chip2.getText().toString();
-        dbref_cuser=databaseRef.child(userid);
+        Log.d("DB", "inside connectiviy class");
+        databaseRef = FirebaseDatabase.getInstance().getReference().child("Register");
+        chip = (Chip) findViewById(R.id.chip1);
+        Gchip = (ChipGroup) findViewById(R.id.filter_chip_group);
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        final String userid = user.getUid();
+        connect_view = (TextView) findViewById(R.id.Connect_view);
+        dbref_cuser = databaseRef.child(userid);
 
-        Query query = databaseRef.orderByChild(Schip1);
+        Gchip.setOnCheckedChangeListener(new ChipGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(ChipGroup group, int checkedId) {
+                chip=group.findViewById(checkedId);
+                if(chip!=null){
+                    search=chip.getText().toString();
+                    Log.d("DB","Got the text!!"+ search);
+                    connect_view.setText(null);
+                    get_cuser_data();
+                } else{
+                    connect_view.setText(null);
+                }
+            }
+        });
+
+    }
+
+    public  void get_cuser_data() {
         dbref_cuser.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists()){
                     Users user = dataSnapshot.getValue(Users.class);
                     Muser=oMapper.convertValue(user, Map.class);
-                    cschool= (String) Muser.get(Schip1);
-                    cplace=(String)Muser.get(Schip2);
-                    Log.d("DB","Data exists "+cplace);
+                    Sdata= (String) Muser.get(search);
+                    Log.d("DB","Data exists "+Sdata);
+                    get_connectors();
 
                 }else {
                     Log.d("DB","Data not exists for current user");
                 }
 
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 Log.d("DB","Data for cuser cancelled");
 
             }
         });
+    }
 
+    public void get_connectors() {
+        Query query = databaseRef.orderByChild(search).equalTo(Sdata);
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Schip1=chip1.getText().toString();
-                Schip2=chip2.getText().toString();
                 if (dataSnapshot.exists()) {
 
                     // dataSnapshot is the "issue" node with all children with id 0
                     for (DataSnapshot data : dataSnapshot.getChildren()) {
                         // do something with the individual "issues"
-
                         Users user = data.getValue(Users.class);
-                        Muser = oMapper.convertValue(user, Map.class);
-                        if (cplace.equals(Muser.get(Schip2)) && cschool.equals(Muser.get(Schip1))) {
-                            String connectors=user.username + " " + user.place + " " + user.school;
-                            connect_view.append(connectors+" ");
-                            Log.d("DB", "Datasnapshot " +user.username + " " +user.place + " " +user.school);
-                        }
+                        Log.d("DB","Got my connectors"+user.username);
+                        connect_view.append(user.username+",");
                     }
 
                 }else{
@@ -101,7 +112,6 @@ public class Connectivity extends AppCompatActivity {
                 Log.d("DB","Cancelled");
             }
         });
-        // enter logic to filter out connectors.
-
     }
+
 }

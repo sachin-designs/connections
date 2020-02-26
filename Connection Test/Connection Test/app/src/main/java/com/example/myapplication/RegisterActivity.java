@@ -27,6 +27,7 @@ public class RegisterActivity extends AppCompatActivity {
     EditText phnumber;
     EditText school;
     EditText place;
+    EditText work;
     private FirebaseAuth mAuth;
     private DatabaseReference databaseRef;
     Button b;
@@ -48,6 +49,7 @@ public class RegisterActivity extends AppCompatActivity {
         phnumber = (EditText) findViewById(R.id.phnumber);
         school = (EditText) findViewById(R.id.school);
         place = (EditText) findViewById(R.id.Place);
+        work = (EditText) findViewById(R.id.Place);
 
         final String sUsername = username.getText().toString();
         final String sPassword = password.getText().toString();
@@ -56,7 +58,7 @@ public class RegisterActivity extends AppCompatActivity {
         final String sPhNumber = phnumber.getText().toString();
         final String sSchool = school.getText().toString();
         final String sPlace = place.getText().toString();
-
+        final String sWork = place.getText().toString();
         b = findViewById(R.id.button);
 
 
@@ -75,7 +77,7 @@ public class RegisterActivity extends AppCompatActivity {
                             Uid = user.getUid();
 
 
-                            Users users = new Users(sUsername, sPassword, sPhNumber, sEmail, sPlace, sSchool);
+                            Users users = new Users(sUsername, sPassword, sPhNumber, sEmail, sPlace, sSchool, sWork);
                             databaseRef.child(Uid).setValue(users);
 
                             Toast.makeText(RegisterActivity.this, "Authentication success.",

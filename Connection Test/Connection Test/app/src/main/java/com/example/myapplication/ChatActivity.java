@@ -63,7 +63,6 @@ public class ChatActivity extends AppCompatActivity {
         Log.d("DB","inside connectiviy method2");
         startActivity(intent);
 
-
     }
 
     public  void logout(View view){

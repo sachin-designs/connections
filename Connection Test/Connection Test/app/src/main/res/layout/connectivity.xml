@@ -10,31 +10,65 @@
         android:layout_height="144dp"
         android:baselineAligned="false">
 
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chip2"
-            style="@style/Widget.MaterialComponents.Chip.Entry"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/filter_chip_group"
+            android:layout_width="605dp"
+            android:layout_height="85dp"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_marginStart="55dp"
-            android:layout_marginTop="34dp"
-            android:text="place"
-            app:chipIcon="@drawable/ic_navigation_black_24dp"
-            app:closeIcon="@drawable/ic_close_black_24dp" />
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="7dp"
+            android:layout_marginEnd="-5dp"
+            android:layout_marginBottom="52dp"
+            app:singleSelection="true">
 
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chip1"
-            style="@style/Widget.MaterialComponents.Chip.Entry"
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip2"
+                style="@style/Widget.MaterialComponents.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:text="place"
+                app:chipIcon="@drawable/ic_navigation_black_24dp"
+                app:closeIcon="@drawable/ic_close_black_24dp" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip1"
+                style="@style/Widget.MaterialComponents.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:text="school"
+                app:chipIcon="@drawable/ic_navigation_black_24dp"
+                app:closeIcon="@drawable/ic_close_black_24dp" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip3"
+                style="@style/Widget.MaterialComponents.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:text="work"
+                app:chipIcon="@drawable/ic_navigation_black_24dp"
+                app:closeIcon="@drawable/ic_close_black_24dp" />
+
+        </com.google.android.material.chip.ChipGroup>
+
+        <Button
+            android:id="@+id/get_details"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_marginStart="185dp"
-            android:layout_marginTop="34dp"
-            android:text="school"
-            app:chipIcon="@drawable/ic_navigation_black_24dp"
-            app:closeIcon="@drawable/ic_close_black_24dp" />
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="97dp"
+            android:layout_marginEnd="24dp"
+            android:onClick="chip_group"
+            android:text="Get" />
 
     </RelativeLayout>
 
