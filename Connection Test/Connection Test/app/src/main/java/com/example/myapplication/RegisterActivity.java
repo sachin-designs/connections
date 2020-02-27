@@ -67,6 +67,7 @@ public class RegisterActivity extends AppCompatActivity {
         databaseRef = FirebaseDatabase.getInstance().getReference().child("Register");
        // final String Uid = databaseRef.push().getKey();
 
+
         mAuth.createUserWithEmailAndPassword(sEmail, sPassword)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -93,6 +94,7 @@ public class RegisterActivity extends AppCompatActivity {
                         }
                     }
                 });
+
     }
     public void switchActivity(){
         Intent intent = new Intent(RegisterActivity.this, ChatActivity.class);
