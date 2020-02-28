@@ -44,8 +44,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
-
     public void signinOperation(View view){
         email = (EditText)findViewById(R.id.username);
         password = (EditText)findViewById(R.id.password);

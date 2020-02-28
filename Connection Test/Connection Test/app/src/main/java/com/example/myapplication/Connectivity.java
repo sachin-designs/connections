@@ -6,6 +6,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.material.chip.Chip;
@@ -19,6 +21,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 public class Connectivity extends AppCompatActivity {
@@ -32,6 +35,7 @@ public class Connectivity extends AppCompatActivity {
     ChipGroup Gchip;
     String search, Sdata;
     TextView connect_view;
+    ArrayList<Users> Luser=new ArrayList<Users>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,14 +97,16 @@ public class Connectivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-
+                    Luser.clear();
                     // dataSnapshot is the "issue" node with all children with id 0
                     for (DataSnapshot data : dataSnapshot.getChildren()) {
                         // do something with the individual "issues"
                         Users user = data.getValue(Users.class);
                         Log.d("DB","Got my connectors"+user.username);
-                        connect_view.append(user.username+",");
+                        //connect_view.append(user.username+",");
+                        Luser.add(user);
                     }
+                    list_connectors(Luser);
 
                 }else{
                     Log.d("DB","datasnapshot doest not exists");
@@ -112,6 +118,15 @@ public class Connectivity extends AppCompatActivity {
                 Log.d("DB","Cancelled");
             }
         });
+    }
+
+    public void list_connectors(ArrayList<Users> lusers) {
+        RecyclerView rv = (RecyclerView) findViewById(R.id.rv);
+        ContactsAdapter adapter = new ContactsAdapter(lusers);
+        // Attach the adapter to the recyclerview to populate items
+        rv.setAdapter(adapter);
+        // Set layout manager to position the items
+        rv.setLayoutManager(new LinearLayoutManager(this));
     }
 
 }
