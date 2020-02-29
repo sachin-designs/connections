@@ -22,4 +22,5 @@
         android:paddingRight="16dp"
         android:textSize="10sp"
         />
+
 </LinearLayout>

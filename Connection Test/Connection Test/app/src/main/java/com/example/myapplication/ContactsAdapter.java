@@ -65,7 +65,7 @@ public class ContactsAdapter extends
         TextView textView = viewHolder.nameTextView;
         textView.setText(connect.username);
         Button button = viewHolder.messageButton;
-        button.setText("B");
+        button.setText("Connect");
     }
 
     // Returns the total count of items in the list

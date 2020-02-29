@@ -10,6 +10,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -21,6 +26,7 @@ import com.google.firebase.database.ValueEventListener;
 public class ChatActivity extends AppCompatActivity {
     Button b;
     private DatabaseReference databaseRef;
+    GoogleSignInClient mGoogleSignInClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,8 +72,29 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     public  void logout(View view){
+// Configure Google Sign In
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+
+        // Build a GoogleSignInClient with the options specified by gso.
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
         new SessionManagement(ChatActivity.this).remove();
+        mGoogleSignInClient.signOut()
+                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if(task.isSuccessful()) {
+                            Log.d("DB", "Logged out Gaccnt");
+                        }else{
+                            Log.d("DB", "No Gaccount");
+                        }
+                    }
+                });
+
+
         Intent intent = new Intent(ChatActivity.this, MainActivity.class);
         startActivity(intent);
         finish();

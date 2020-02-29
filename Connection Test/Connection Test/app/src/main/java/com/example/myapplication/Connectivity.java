@@ -127,6 +127,6 @@ public class Connectivity extends AppCompatActivity {
         rv.setAdapter(adapter);
         // Set layout manager to position the items
         rv.setLayoutManager(new LinearLayoutManager(this));
-    }
 
+    }
 }
