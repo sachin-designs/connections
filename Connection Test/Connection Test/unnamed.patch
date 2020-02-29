@@ -1,48 +1,66 @@
-Index: Connection Test/Connection Test/app/src/main/java/com/example/myapplication/MainActivity.java
+Index: Connection Test/Connection Test/app/src/main/java/com/example/myapplication/Connectivity.java
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- Connection Test/Connection Test/app/src/main/java/com/example/myapplication/MainActivity.java	(revision 4feb47db42e004b22ef5bb9929a14bbd19b41b63)
-+++ Connection Test/Connection Test/app/src/main/java/com/example/myapplication/MainActivity.java	(date 1582917834181)
-@@ -12,10 +12,21 @@
+--- Connection Test/Connection Test/app/src/main/java/com/example/myapplication/Connectivity.java	(revision 7b4c69cb68ab8db806a1d252cb7d0f9a5de1a94a)
++++ Connection Test/Connection Test/app/src/main/java/com/example/myapplication/Connectivity.java	(date 1582791591041)
+@@ -127,6 +127,6 @@
+         rv.setAdapter(adapter);
+         // Set layout manager to position the items
+         rv.setLayoutManager(new LinearLayoutManager(this));
+-    }
+ 
+-}
++    }
++}
+\ No newline at end of file
+Index: Connection Test/Connection Test/app/src/main/res/layout/recycler_items.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- Connection Test/Connection Test/app/src/main/res/layout/recycler_items.xml	(revision 7b4c69cb68ab8db806a1d252cb7d0f9a5de1a94a)
++++ Connection Test/Connection Test/app/src/main/res/layout/recycler_items.xml	(date 1582791595267)
+@@ -22,4 +22,5 @@
+         android:paddingRight="16dp"
+         android:textSize="10sp"
+         />
++
+ </LinearLayout>
+\ No newline at end of file
+Index: Connection Test/Connection Test/app/src/main/java/com/example/myapplication/ChatActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- Connection Test/Connection Test/app/src/main/java/com/example/myapplication/ChatActivity.java	(revision 7b4c69cb68ab8db806a1d252cb7d0f9a5de1a94a)
++++ Connection Test/Connection Test/app/src/main/java/com/example/myapplication/ChatActivity.java	(date 1582948592057)
+@@ -10,6 +10,11 @@
  import androidx.annotation.NonNull;
  import androidx.appcompat.app.AppCompatActivity;
  
 +import com.google.android.gms.auth.api.signin.GoogleSignIn;
-+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 +import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 +import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-+import com.google.android.gms.common.api.ApiException;
-+import com.google.android.gms.common.api.GoogleApiClient;
- import com.google.android.gms.tasks.OnCompleteListener;
- import com.google.android.gms.tasks.Task;
-+import com.google.android.material.snackbar.Snackbar;
-+import com.google.firebase.auth.AuthCredential;
- import com.google.firebase.auth.AuthResult;
++import com.google.android.gms.tasks.OnCompleteListener;
++import com.google.android.gms.tasks.Task;
  import com.google.firebase.auth.FirebaseAuth;
-+import com.google.firebase.auth.FirebaseUser;
-+import com.google.firebase.auth.GoogleAuthProvider;
- import com.google.firebase.database.DatabaseReference;
- import com.google.firebase.database.FirebaseDatabase;
- 
-@@ -31,18 +42,121 @@
-     SharedPreferences sharedpreferences;
-     String sEmail;
-     String sPassword;
+ import com.google.firebase.auth.FirebaseUser;
+ import com.google.firebase.database.DataSnapshot;
+@@ -21,6 +26,7 @@
+ public class ChatActivity extends AppCompatActivity {
+     Button b;
+     private DatabaseReference databaseRef;
 +    GoogleSignInClient mGoogleSignInClient;
-+
-+    private static final int RC_SIGN_IN = 234;
-+
+ 
      @Override
      protected void onCreate(Bundle savedInstanceState) {
-         super.onCreate(savedInstanceState);
-         setContentView(R.layout.activity_main);
+@@ -66,8 +72,29 @@
+     }
  
-+        mAuth = FirebaseAuth.getInstance();
-+
-+        // Configure Google Sign In
+     public  void logout(View view){
++// Configure Google Sign In
 +        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
 +                .requestIdToken(getString(R.string.default_web_client_id))
 +                .requestEmail()
@@ -50,149 +68,74 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 +
 +        // Build a GoogleSignInClient with the options specified by gso.
 +        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-+
-+        //Now we will attach a click listener to the sign_in_button
-+        //and inside onClick() method we are calling the signIn() method that will open
-+        //google sign in intent
-+        findViewById(R.id.sign_in_button).setOnClickListener(new View.OnClickListener() {
-+            @Override
-+            public void onClick(View view) {
-+                signIn();
-+//                Intent intent = new Intent(MainActivity.this, ChatActivity.class);
-+//                finish();
-+//                startActivity(intent);
-+            }
-+        });
-     }
-+
-+    //this method is called on click
-+    private void signIn() {
-+        //getting the google signin intent
-+        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-+
-+        //starting the activity for result
-+        startActivityForResult(signInIntent, RC_SIGN_IN);
-+        Log.d("DB","result fo rcsigin"+RC_SIGN_IN);
-+
-+    }
-+//    protected void onStart() {
-+//        super.onStart();
-+//
-+//        //if the user is already signed in
-+//        //we will close this activity
-+//        //and take the user to profile activity
-+//        if (mAuth.getCurrentUser() != null) {
-+//            finish();
-+//            startActivity(new Intent(this, ChatActivity.class));
-+//        }
-+//    }
-+
-+    @Override
-+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-+        super.onActivityResult(requestCode, resultCode, data);
-+        Log.d("DB","result for rcsigin2-"+RC_SIGN_IN);
-+        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
-+        if (requestCode == RC_SIGN_IN) {
-+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-+            try {
-+                Log.d("DB","result for task1-"+task);
-+                // Google Sign In was successful, authenticate with Firebase
-+                GoogleSignInAccount account = task.getResult(ApiException.class);
-+                Log.d("DB","result for gmailaccount-"+account);
-+                firebaseAuthWithGoogle(account);
-+            } catch (ApiException e) {
-+                // Google Sign In failed, update UI appropriately
-+                Log.d("DB", "Google sign in failed", e);
-+                // ...
-+            }
-+        }
-+    }
-+
-+    private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
-+        Log.d("DB", "firebaseAuthWithGoogle:" + acct.getId());
-+
-+        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
-+        mAuth.signInWithCredential(credential)
-+               .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+ 
+         new SessionManagement(ChatActivity.this).remove();
++        mGoogleSignInClient.signOut()
++                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
 +                    @Override
-+                    public void onComplete(@NonNull Task<AuthResult> task) {
-+                        if (task.isSuccessful()) {
-+                            // Sign in success, update UI with the signed-in user's information
-+                            Log.d("DB", "signInWithCredential:success");
-+                            Register();
-+                            FirebaseUser user = mAuth.getCurrentUser();
-+
-+                        } else {
-+                            // If sign in fails, display a message to the user.
-+                            Log.w("DB", "signInWithCredential:failure", task.getException());
-+                            Snackbar.make(findViewById(R.id.username), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
-+
++                    public void onComplete(@NonNull Task<Void> task) {
++                        if(task.isSuccessful()) {
++                            Log.d("DB", "Logged out Gaccnt");
++                        }else{
++                            Log.d("DB", "No Gaccount");
 +                        }
-+
-+                        // ...
 +                    }
 +                });
-+    }
 +
-+    public void Register(){
-+        Intent intent = new Intent(MainActivity.this, RegisterActivity.class);
-+        finish();
-+        startActivity(intent);
-+    }
 +
-     public void Register(View view){
-         Intent intent = new Intent(MainActivity.this, RegisterActivity.class);
-         finish();
+         Intent intent = new Intent(ChatActivity.this, MainActivity.class);
          startActivity(intent);
--
-     }
-+
- 
- 
- 
-Index: Connection Test/Connection Test/app/src/main/res/layout/activity_main.xml
+         finish();
+Index: Connection Test/Connection Test/app/src/main/java/com/example/myapplication/ContactsAdapter.java
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- Connection Test/Connection Test/app/src/main/res/layout/activity_main.xml	(revision 4feb47db42e004b22ef5bb9929a14bbd19b41b63)
-+++ Connection Test/Connection Test/app/src/main/res/layout/activity_main.xml	(date 1582916882889)
-@@ -6,7 +6,8 @@
-     android:layout_height="match_parent"
-     tools:context=".MainActivity"
-     android:orientation="vertical"
--    android:gravity="center_horizontal">
-+    android:gravity="center_horizontal"
-+    android:id="@+id/main_activity">
+--- Connection Test/Connection Test/app/src/main/java/com/example/myapplication/ContactsAdapter.java	(revision 7b4c69cb68ab8db806a1d252cb7d0f9a5de1a94a)
++++ Connection Test/Connection Test/app/src/main/java/com/example/myapplication/ContactsAdapter.java	(date 1582805317161)
+@@ -65,7 +65,7 @@
+         TextView textView = viewHolder.nameTextView;
+         textView.setText(connect.username);
+         Button button = viewHolder.messageButton;
+-        button.setText("B");
++        button.setText("Connect");
+     }
  
-     <EditText
-         android:id="@+id/username"
-@@ -43,5 +44,10 @@
-         android:onClick="Register"
-         android:text="Not Registered!!! Click Here To Register" />
- 
-+    <com.google.android.gms.common.SignInButton
-+        android:id="@+id/sign_in_button"
-+        android:layout_width="wrap_content"
-+        android:layout_height="wrap_content" />
-+
- 
- </LinearLayout>
-\ No newline at end of file
+     // Returns the total count of items in the list
+Index: Connection Test/Connection Test/gradle/wrapper/gradle-wrapper.properties
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>windows-1252
+===================================================================
+--- Connection Test/Connection Test/gradle/wrapper/gradle-wrapper.properties	(revision 7b4c69cb68ab8db806a1d252cb7d0f9a5de1a94a)
++++ Connection Test/Connection Test/gradle/wrapper/gradle-wrapper.properties	(date 1582854971771)
+@@ -1,6 +1,6 @@
+-#Mon Jan 20 19:27:29 IST 2020
++#Fri Feb 28 07:26:11 IST 2020
+ distributionBase=GRADLE_USER_HOME
+ distributionPath=wrapper/dists
+ zipStoreBase=GRADLE_USER_HOME
+ zipStorePath=wrapper/dists
+-distributionUrl=https\://services.gradle.org/distributions/gradle-5.4.1-all.zip
++distributionUrl=https\://services.gradle.org/distributions/gradle-5.6.4-all.zip
 Index: Connection Test/Connection Test/.idea/gradle.xml
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- Connection Test/Connection Test/.idea/gradle.xml	(revision 4feb47db42e004b22ef5bb9929a14bbd19b41b63)
-+++ Connection Test/Connection Test/.idea/gradle.xml	(date 1582918329163)
-@@ -3,11 +3,14 @@
+--- Connection Test/Connection Test/.idea/gradle.xml	(revision 7b4c69cb68ab8db806a1d252cb7d0f9a5de1a94a)
++++ Connection Test/Connection Test/.idea/gradle.xml	(date 1582944528024)
+@@ -1,15 +1,19 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
++  <component name="GradleMigrationSettings" migrationVersion="1" />
    <component name="GradleSettings">
      <option name="linkedExternalProjectsSettings">
        <GradleProjectSettings>
 -        <compositeConfiguration>
 -          <compositeBuild compositeDefinitionSource="SCRIPT" />
 -        </compositeConfiguration>
++        <option name="testRunner" value="PLATFORM" />
          <option name="distributionType" value="DEFAULT_WRAPPED" />
          <option name="externalProjectPath" value="$PROJECT_DIR$" />
 +        <option name="modules">
@@ -202,35 +145,23 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 +          </set>
 +        </option>
          <option name="resolveModulePerSourceSet" value="false" />
-         <option name="testRunner" value="PLATFORM" />
+-        <option name="testRunner" value="PLATFORM" />
        </GradleProjectSettings>
-Index: Connection Test/Connection Test/.idea/misc.xml
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- Connection Test/Connection Test/.idea/misc.xml	(revision 4feb47db42e004b22ef5bb9929a14bbd19b41b63)
-+++ Connection Test/Connection Test/.idea/misc.xml	(date 1582918328914)
-@@ -1,6 +1,6 @@
- <?xml version="1.0" encoding="UTF-8"?>
- <project version="4">
--  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" project-jdk-name="1.8" project-jdk-type="JavaSDK">
-+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" project-jdk-name="1.8" project-jdk-type="JavaSDK">
-     <output url="file://$PROJECT_DIR$/build/classes" />
+     </option>
    </component>
-   <component name="ProjectType">
-Index: Connection Test/Connection Test/app/build.gradle
+Index: Connection Test/Connection Test/build.gradle
 IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- Connection Test/Connection Test/app/build.gradle	(revision 4feb47db42e004b22ef5bb9929a14bbd19b41b63)
-+++ Connection Test/Connection Test/app/build.gradle	(date 1582853197393)
-@@ -34,6 +34,7 @@
-     implementation 'com.fasterxml.jackson.core:jackson-core:2.10.2'
-     implementation 'com.fasterxml.jackson.core:jackson-annotations:2.10.2'
-     implementation 'com.fasterxml.jackson.core:jackson-databind:2.10.2'
-+    implementation 'com.google.android.gms:play-services-auth:16.0.1'
- 
- 
- //    implementation fileTree(dir: 'libs', include: ['*.jar'])
+--- Connection Test/Connection Test/build.gradle	(revision 7b4c69cb68ab8db806a1d252cb7d0f9a5de1a94a)
++++ Connection Test/Connection Test/build.gradle	(date 1582854971731)
+@@ -7,7 +7,7 @@
+         
+     }
+     dependencies {
+-        classpath 'com.android.tools.build:gradle:3.5.3'
++        classpath 'com.android.tools.build:gradle:3.6.0'
+         classpath 'com.google.gms:google-services:4.3.2'  // Google Services plugin
+         
+         // NOTE: Do not place your application dependencies here; they belong
