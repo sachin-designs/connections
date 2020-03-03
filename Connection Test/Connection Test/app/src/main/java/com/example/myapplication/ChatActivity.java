@@ -34,12 +34,11 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(R.layout.chat_activity);
 
         b = (Button)findViewById(R.id.button1);
-
         FirebaseUser user= FirebaseAuth.getInstance().getCurrentUser();
         final String userid=user.getUid();
         final TextView textView = (TextView) findViewById(R.id.textView);
         Log.d("User","User"+userid);
-        databaseRef = FirebaseDatabase.getInstance().getReference().child("Register").child(userid);
+       databaseRef = FirebaseDatabase.getInstance().getReference().child("Register").child(userid);
         // Read from the database
         databaseRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -65,7 +64,7 @@ public class ChatActivity extends AppCompatActivity {
         Intent intent = new Intent(ChatActivity.this, Connectivity.class);
         Log.d("DB","inside connectiviy method");
 //       // intent.putExtra("name", sEmail);
-        finish();
+        //finish();
         Log.d("DB","inside connectiviy method2");
         startActivity(intent);
 
@@ -96,8 +95,9 @@ public class ChatActivity extends AppCompatActivity {
 
 
         Intent intent = new Intent(ChatActivity.this, MainActivity.class);
-        startActivity(intent);
         finish();
+        startActivity(intent);
+
     }
 
 

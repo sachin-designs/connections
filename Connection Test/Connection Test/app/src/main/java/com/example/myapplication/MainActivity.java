@@ -25,8 +25,12 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -41,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
     String sEmail;
     String sPassword;
     GoogleSignInClient mGoogleSignInClient;
+    DatabaseReference databaseRef;
 
     private static final int RC_SIGN_IN = 234;
 
@@ -48,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        databaseRef = FirebaseDatabase.getInstance().getReference().child("Register");
         mAuth = FirebaseAuth.getInstance();
 
         // Configure Google Sign In
@@ -117,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
+    private void firebaseAuthWithGoogle(final GoogleSignInAccount acct) {
         Log.d("DB", "firebaseAuthWithGoogle:" + acct.getId());
 
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
@@ -128,8 +133,39 @@ public class MainActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d("DB", "signInWithCredential:success");
-                            Register();
-                            FirebaseUser user = mAuth.getCurrentUser();
+                            SessionManagement obj = new SessionManagement(MainActivity.this);
+                            String acct_name=acct.getDisplayName();
+                            Log.d("DB","email display name"+acct_name);
+                            Log.d("DB","email display name"+acct.getDisplayName());
+                            obj.setName(acct_name);
+                            obj.setGaccnt(acct);
+                            String signval = mAuth.getCurrentUser().getUid();
+                            Log.d("DB","uidvalue"+signval);
+                            Query query = databaseRef.orderByKey().equalTo(signval);
+                            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    if(dataSnapshot.exists()){
+                                        switchActivity();
+                                        Log.d("DB","exists");
+                                    } else{
+                                        Log.d("DB","user not exists");
+                                        Register();
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                                    Log.d("DB","DB failed");
+                                }
+                            });
+
+//                            if(signval){
+//                                switchActivity();
+//                            }else {
+//
+//                                FirebaseUser user = mAuth.getCurrentUser();
+//                            }
 
                         } else {
                             // If sign in fails, display a message to the user.

@@ -31,7 +31,7 @@ public class RegisterActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private DatabaseReference databaseRef;
     Button b;
-
+    String gmail,gname;
     String Uid;
     FirebaseUser user;
 
@@ -39,6 +39,16 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.register_activity);
+        SessionManagement obj = new SessionManagement(RegisterActivity.this);
+        gmail = obj.getGaccnt_gmail();
+        gname = obj.getGaccnt_name();
+        username = (EditText) findViewById(R.id.username);
+        email = (EditText) findViewById(R.id.emailId);
+        if(!gname.isEmpty()) {
+            username.setText(gname);
+            email.setText(gmail);
+        }
+        Log.d("DB","session_object "+gmail+gname);
     }
 
     public void signUpProcess(View view) {
@@ -66,8 +76,9 @@ public class RegisterActivity extends AppCompatActivity {
 
         databaseRef = FirebaseDatabase.getInstance().getReference().child("Register");
        // final String Uid = databaseRef.push().getKey();
-
-
+        SessionManagement obj = new SessionManagement(RegisterActivity.this);
+        Log.d("DB","session_object"+obj.getGaccnt_gmail());
+    if(gmail.isEmpty()) {
         mAuth.createUserWithEmailAndPassword(sEmail, sPassword)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -76,11 +87,8 @@ public class RegisterActivity extends AppCompatActivity {
                             Log.d("TAG", "usercreated");
                             user = mAuth.getCurrentUser();
                             Uid = user.getUid();
-
-
                             Users users = new Users(sUsername, sPassword, sPhNumber, sEmail, sPlace, sSchool, sWork);
                             databaseRef.child(Uid).setValue(users);
-
                             Toast.makeText(RegisterActivity.this, "Authentication success.",
                                     Toast.LENGTH_LONG).show();
                             SessionManagement obj = new SessionManagement(RegisterActivity.this);
@@ -94,7 +102,13 @@ public class RegisterActivity extends AppCompatActivity {
                         }
                     }
                 });
-
+    }else{
+        Users users = new Users(gname,sPhNumber, gmail, sPlace, sSchool, sWork);
+        user = mAuth.getCurrentUser();
+        Uid = user.getUid();
+        databaseRef.child(Uid).setValue(users);
+        switchActivity();
+    }
     }
     public void switchActivity(){
         Intent intent = new Intent(RegisterActivity.this, ChatActivity.class);

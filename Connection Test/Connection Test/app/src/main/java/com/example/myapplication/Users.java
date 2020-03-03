@@ -24,5 +24,12 @@ public class Users implements Serializable {
         this.school=school;
         this.work=work;
     }
-
+    Users(String username, String phNumber, String email, String place, String school, String work){
+        this.username = username;
+        this.phNumber = phNumber;
+        this.email = email;
+        this.place=place;
+        this.school=school;
+        this.work=work;
+    }
 }
