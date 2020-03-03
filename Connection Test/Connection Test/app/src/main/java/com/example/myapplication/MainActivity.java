@@ -188,6 +188,7 @@ public class MainActivity extends AppCompatActivity {
     }
     public void switchActivity(){
         Intent intent = new Intent(MainActivity.this, ChatActivity.class);
+        Log.d("DB","intent"+intent);
         intent.putExtra("name", sEmail);
         finish();
         startActivity(intent);

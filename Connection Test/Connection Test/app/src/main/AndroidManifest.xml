@@ -18,13 +18,15 @@
         </activity>
         <activity
             android:name=".RegisterActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="fullSensor" />
         <activity android:name=".ChatActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="fullSensor"/>
         <activity android:name=".MainActivity"
             android:label="Login"/>
         <activity android:name=".Connectivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="fullSensor"/>
+        <activity android:name=".Message_activity"
+            android:screenOrientation="fullSensor"/>
     </application>
 
 </manifest>

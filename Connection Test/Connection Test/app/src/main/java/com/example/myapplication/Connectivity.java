@@ -129,4 +129,6 @@ public class Connectivity extends AppCompatActivity {
         rv.setLayoutManager(new LinearLayoutManager(this));
 
     }
+
+
 }
