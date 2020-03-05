@@ -168,7 +168,7 @@ public class Message_activity extends AppCompatActivity {
                     HashMap msg = (HashMap) dataSnapshot.getValue();
                     Log.d("DB","Hey got msg."+msg.get(msg_ref));
                     chat_box.setText(" ");
-                    //message.append(msg.get(msg_ref)+",");
+                    message.append(msg.get(msg_ref)+",");
                     chat_box.setText((CharSequence) msg.get(msg_ref));
                 } else {
                     chat_box.setText(" ");
