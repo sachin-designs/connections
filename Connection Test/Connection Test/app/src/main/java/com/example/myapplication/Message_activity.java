@@ -55,7 +55,6 @@ public class Message_activity extends AppCompatActivity {
                 }
             }
         });
-
     }
 //    public void set_msg_box() {
 //        if(msg_ref!=null){
@@ -136,8 +135,8 @@ public class Message_activity extends AppCompatActivity {
 
     public void check_message(String cuserid, String connect_userid) {
         Log.d("DB","Inside check_message");
-        databaseRef=FirebaseDatabase.getInstance().getReference().child("Msg_refs");
-        Query query=databaseRef.orderByChild(cuserid);
+        databaseRef=FirebaseDatabase.getInstance().getReference().child("Msg_refs").child(cuserid);
+        Query query=databaseRef.child(connect_userid).orderByValue();
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -196,7 +195,7 @@ public class Message_activity extends AppCompatActivity {
         //Message_ref message_cuser= new Message_ref(msg_ref,cuserid);
         Log.d("DB", "message obj:"+msg_ref_cpy);
         databaseRef_msg.child(connect_userid).child(cuserid).setValue(msg_ref_cpy);
-        msg.clearComposingText();
+        msg.setText("");
         fetch_user(user);
     }
 
