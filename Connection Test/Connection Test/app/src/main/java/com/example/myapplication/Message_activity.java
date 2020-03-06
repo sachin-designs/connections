@@ -98,7 +98,6 @@ public class Message_activity extends AppCompatActivity {
                 Log.d("DB","Failed");
             }
         });
-
     }
 
     private void db_get_ids(Users user, final String cuserid) {
@@ -168,7 +167,7 @@ public class Message_activity extends AppCompatActivity {
                     HashMap msg = (HashMap) dataSnapshot.getValue();
                     Log.d("DB","Hey got msg."+msg.get(msg_ref));
                     chat_box.setText(" ");
-                    message.append(msg.get(msg_ref)+",");
+                    //message.append(msg.get(msg_ref));
                     chat_box.setText((CharSequence) msg.get(msg_ref));
                 } else {
                     chat_box.setText(" ");
@@ -184,10 +183,12 @@ public class Message_activity extends AppCompatActivity {
 
     public void create_message_ref(String cuserid, String connect_userid, String msg_ref_cpy) {
         Log.d("DB","Inside create_message_ref");
+
         message.append(Cuser_name+":"+msg.getText().toString()+",");
         Log.d("DB","message"+message);
         databaseRef_msg=FirebaseDatabase.getInstance().getReference().child("Messages");
         databaseRef_msg.child(msg_ref_cpy).setValue(message.toString());
+        message.delete(0,message.length());
         //Message_ref message_connector= new Message_ref(msg_ref_cpy,connect_userid);
         Log.d("DB", "message obj:"+msg_ref_cpy);
         databaseRef_msg = FirebaseDatabase.getInstance().getReference().child("Msg_refs");
@@ -200,7 +201,12 @@ public class Message_activity extends AppCompatActivity {
         databaseRef_msg.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                set_chat_box();
+                if(dataSnapshot.exists()) {
+                    HashMap msg = (HashMap) dataSnapshot.getValue();
+                    Log.d("DB","Hey got msg."+msg.get(msg_ref));
+                    message.append(msg.get(msg_ref));
+                    set_chat_box();
+                }
             }
 
             @Override
