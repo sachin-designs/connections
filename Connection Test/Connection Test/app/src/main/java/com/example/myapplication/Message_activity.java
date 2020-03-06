@@ -183,7 +183,7 @@ public class Message_activity extends AppCompatActivity {
 
     public void create_message_ref(String cuserid, String connect_userid, String msg_ref_cpy) {
         Log.d("DB","Inside create_message_ref");
-
+        message_append();
         message.append(Cuser_name+":"+msg.getText().toString()+",");
         Log.d("DB","message"+message);
         databaseRef_msg=FirebaseDatabase.getInstance().getReference().child("Messages");
@@ -202,9 +202,6 @@ public class Message_activity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists()) {
-                    HashMap msg = (HashMap) dataSnapshot.getValue();
-                    Log.d("DB","Hey got msg."+msg.get(msg_ref));
-                    message.append(msg.get(msg_ref));
                     set_chat_box();
                 }
             }
@@ -215,6 +212,25 @@ public class Message_activity extends AppCompatActivity {
             }
         });
         //fetch_user(user);
+    }
+
+    public void message_append() {
+        databaseRef_msg=FirebaseDatabase.getInstance().getReference().child("Messages").child(msg_ref);
+        databaseRef_msg.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()) {
+                    String msg = (String) dataSnapshot.getValue();
+                    Log.d("DB","Hey got msg."+msg);
+                    message.append(msg);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.d("DB","Cancelled the DB operation");
+            }
+        });
     }
 
     public void set_chat_fields(Users user) {
