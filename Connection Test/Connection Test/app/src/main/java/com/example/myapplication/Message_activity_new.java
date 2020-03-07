@@ -155,6 +155,9 @@ public class Message_activity_new extends AppCompatActivity {
         rv.setAdapter(adapter);
         // Set layout manager to position the items
         rv.setLayoutManager(new LinearLayoutManager(this));
+        rv.smoothScrollToPosition(rv.getBottom());
+        ((LinearLayoutManager)rv.getLayoutManager()).setStackFromEnd(true);
+
     }
 
     public void create_message_ref() {
