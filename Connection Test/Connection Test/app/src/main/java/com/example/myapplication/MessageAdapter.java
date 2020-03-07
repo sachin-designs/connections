@@ -55,13 +55,13 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         holder.params = (LinearLayout.LayoutParams) holder.message_left.getLayoutParams();
         final Message_ref msg_obj = lmessages.get(position);
         String msg_user=msg_obj.Message_user;
-        if(msg_user==connect_user){
+        if(msg_user.equals(connect_user)){
             holder.params.gravity = Gravity.START;
             holder.message_left.setTextColor(Color.BLUE);
             holder.message_left.setText(msg_obj.Message);
         } else {
             holder.params.gravity=Gravity.END;
-            holder.message_left.setTextColor(Color.GREEN);
+            holder.message_left.setTextColor(Color.BLACK);
             holder.message_left.setText(msg_obj.Message);
         }
     }
