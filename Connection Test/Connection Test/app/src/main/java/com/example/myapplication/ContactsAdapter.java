@@ -86,7 +86,7 @@ public class ContactsAdapter extends
                 Log.d("DB", "onClick: view"+viewHolder.getAdapterPosition());
                 Log.d("DB","user data for selection"+mConnectors.get(position)+" "+connect);
                 //ContactsAdapter.this.context.startActivity(new Intent(ContactsAdapter.this.context,Message_activity.class));
-                Intent intent = new Intent (v.getContext(), Message_activity.class);
+                Intent intent = new Intent (v.getContext(), Message_activity_new.class);
                 intent.putExtra("Object",mConnectors.get(position));
                 Log.d("DB","intent"+intent);
                 v.getContext().startActivity(intent);
@@ -99,7 +99,5 @@ public class ContactsAdapter extends
     public int getItemCount() {
         return mConnectors.size();
     }
-
-
 
 }

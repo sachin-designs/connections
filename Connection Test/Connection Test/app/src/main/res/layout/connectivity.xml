@@ -63,7 +63,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="825dp"
+        android:layout_height="match_parent"
         android:baselineAligned="false">
 
         <TextView
@@ -73,17 +73,17 @@
             android:hint="Connectors" />
 
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv"
             android:layout_width="match_parent"
-            android:layout_height="692dp"
+            android:layout_height="match_parent"
             android:layout_below="@+id/Connect_view"
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginStart="3dp"
-            android:layout_marginTop="-1dp"
-            android:layout_marginEnd="-3dp"
-            android:layout_marginBottom="7dp"
-            android:id="@+id/rv"/>
+            android:layout_marginStart="-2dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="2dp"
+            android:layout_marginBottom="2dp" />
 
     </RelativeLayout>
 

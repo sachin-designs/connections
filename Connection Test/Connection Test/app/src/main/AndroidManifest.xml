@@ -25,7 +25,7 @@
             android:label="Login"/>
         <activity android:name=".Connectivity"
             android:screenOrientation="fullSensor"/>
-        <activity android:name=".Message_activity"
+        <activity android:name=".Message_activity_new"
             android:screenOrientation="fullSensor"/>
     </application>
 

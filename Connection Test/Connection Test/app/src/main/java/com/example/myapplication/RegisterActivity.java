@@ -87,7 +87,7 @@ public class RegisterActivity extends AppCompatActivity {
                             Log.d("TAG", "usercreated");
                             user = mAuth.getCurrentUser();
                             Uid = user.getUid();
-                            Users users = new Users(sUsername, sPassword, sPhNumber, sEmail, sPlace, sSchool, sWork);
+                            Users users = new Users(sUsername, sPassword, sPhNumber, sEmail, sPlace, sSchool, sWork, Uid);
                             databaseRef.child(Uid).setValue(users);
                             Toast.makeText(RegisterActivity.this, "Authentication success.",
                                     Toast.LENGTH_LONG).show();
@@ -103,9 +103,9 @@ public class RegisterActivity extends AppCompatActivity {
                     }
                 });
     }else{
-        Users users = new Users(gname,sPhNumber, gmail, sPlace, sSchool, sWork);
         user = mAuth.getCurrentUser();
         Uid = user.getUid();
+        Users users = new Users(gname,sPhNumber, gmail, sPlace, sSchool, sWork, Uid);
         databaseRef.child(Uid).setValue(users);
         switchActivity();
     }
