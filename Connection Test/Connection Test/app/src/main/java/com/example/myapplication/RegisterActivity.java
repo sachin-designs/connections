@@ -59,7 +59,7 @@ public class RegisterActivity extends AppCompatActivity {
         phnumber = (EditText) findViewById(R.id.phnumber);
         school = (EditText) findViewById(R.id.school);
         place = (EditText) findViewById(R.id.Place);
-        work = (EditText) findViewById(R.id.Place);
+        work = (EditText) findViewById(R.id.work);
 
         final String sUsername = username.getText().toString();
         final String sPassword = password.getText().toString();
@@ -68,7 +68,7 @@ public class RegisterActivity extends AppCompatActivity {
         final String sPhNumber = phnumber.getText().toString();
         final String sSchool = school.getText().toString();
         final String sPlace = place.getText().toString();
-        final String sWork = place.getText().toString();
+        final String sWork = work.getText().toString();
         b = findViewById(R.id.button);
 
 
