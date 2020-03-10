@@ -1,6 +1,12 @@
 package com.example.myapplication;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -10,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -31,9 +38,16 @@ public class RegisterActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private DatabaseReference databaseRef;
     Button b;
-    String gmail,gname;
+    String gmail, gname;
     String Uid;
     FirebaseUser user;
+    String LOCATION_PROVIDER = LocationManager.GPS_PROVIDER;
+    LocationManager mLocationManager;
+    LocationListener mLocationListener;
+    long MIN_TIME = 5000;
+    float MIN_DISTANCE = 1000;
+    final int REQUEST_CODE = 123;
+    boolean mUseLocation = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,12 +58,20 @@ public class RegisterActivity extends AppCompatActivity {
         gname = obj.getGaccnt_name();
         username = (EditText) findViewById(R.id.username);
         email = (EditText) findViewById(R.id.emailId);
-        if(!gname.isEmpty()) {
+        if (!gname.isEmpty()) {
             username.setText(gname);
             email.setText(gmail);
         }
-        Log.d("DB","session_object "+gmail+gname);
+        Log.d("DB", "session_object " + gmail + gname);
     }
+    // onResume() lifecycle callback:
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d("DB", "onResume() called");
+        if(mUseLocation) locationcurrent();
+    }
+
 
     public void signUpProcess(View view) {
         username = (EditText) findViewById(R.id.username);
@@ -71,8 +93,7 @@ public class RegisterActivity extends AppCompatActivity {
         final String sWork = work.getText().toString();
         b = findViewById(R.id.button);
 
-
-        mAuth = FirebaseAuth.getInstance();
+         mAuth = FirebaseAuth.getInstance();
 
         databaseRef = FirebaseDatabase.getInstance().getReference().child("Register");
        // final String Uid = databaseRef.push().getKey();
@@ -110,6 +131,72 @@ public class RegisterActivity extends AppCompatActivity {
         switchActivity();
     }
     }
+
+    public void locationcurrent(){
+        Log.d("DB","Indide locaitoncurrent");
+        mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        mLocationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                Log.d("DB", "onLocationChanged() callback received");
+                Log.d("DB","inside");
+
+                String longitude = String.valueOf(location.getLongitude());
+                String latitude = String.valueOf(location.getLatitude());
+
+                Log.d("DB", "longitude is: " + longitude);
+                Log.d("DB", "latitude is: " + latitude);
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+                Log.d("DB", "onStatusChanged() callback received. Status: " + status);
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+                Log.d("DB", "onProviderEnabled() callback received. Provider: " + provider);
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+                Log.d("DB", "onProviderDisabled() callback received. Provider: " + provider);
+            }
+        };
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            ActivityCompat.requestPermissions(this,
+                    new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE);
+            return;
+        }
+
+        mLocationManager.requestLocationUpdates(LOCATION_PROVIDER, MIN_TIME, MIN_DISTANCE, mLocationListener);
+
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if(requestCode == REQUEST_CODE){
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Log.d("DB", "onRequestPermissionsResult(): Permission granted!");
+
+                // Getting weather only if we were granted permission.
+                locationcurrent();
+            } else {
+                Log.d("DB", "Permission denied =( ");
+            }
+        }
+
+    }
+
+
     public void switchActivity(){
         Intent intent = new Intent(RegisterActivity.this, ChatActivity.class);
         SessionManagement sessionManagement = new SessionManagement(RegisterActivity.this);
