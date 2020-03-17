@@ -1,7 +1,9 @@
 package com.example.myapplication;
 
+import android.app.Notification;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -9,6 +11,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -37,12 +41,14 @@ public class Message_activity_new extends AppCompatActivity {
     private DatabaseReference databaseRef_msg,databaseRef,databaseRef_cuser;
     DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     ArrayList<Message_ref> lmessages = new ArrayList<>();
+    private NotificationManagerCompat notificationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.message_activity);
         Log.d("DB","inside new message activity");
+        notificationManager = NotificationManagerCompat.from(this);
         Date date = new Date();
         Intent intent=getIntent();
         user= (Users) intent.getSerializableExtra("Object");
@@ -131,6 +137,8 @@ public class Message_activity_new extends AppCompatActivity {
                         Log.d("DB","Got my msg"+msg.Message);
                         //connect_view.append(user.username+",");
                         lmessages.add(msg);
+                        getNotify(msg);
+
                     }
                     message_adapter(lmessages);
                 }else{
@@ -190,5 +198,18 @@ public class Message_activity_new extends AppCompatActivity {
 
     public void set_chat_fields(Users user) {
         msg_id.setText(user.username);
+    }
+
+    public void getNotify(Message_ref msg){
+        Notification notification = new NotificationCompat.Builder(this, Notification_Class.CHANNEL_1_ID)
+                .setSmallIcon(R.drawable.message)
+                .setContentTitle(msg.Message_user)
+                .setContentText(msg.Message)
+                .setVibrate(new long[] {2000})
+                .setSound(Settings.System.DEFAULT_NOTIFICATION_URI)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+                .build();
+        notificationManager.notify(1, notification);
     }
 }
