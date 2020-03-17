@@ -99,5 +99,4 @@ public class ContactsAdapter extends
     public int getItemCount() {
         return mConnectors.size();
     }
-
 }

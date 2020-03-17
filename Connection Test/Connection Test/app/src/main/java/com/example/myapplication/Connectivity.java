@@ -64,7 +64,6 @@ public class Connectivity extends AppCompatActivity {
                 }
             }
         });
-
     }
 
     public  void get_cuser_data() {
@@ -127,8 +126,6 @@ public class Connectivity extends AppCompatActivity {
         rv.setAdapter(adapter);
         // Set layout manager to position the items
         rv.setLayoutManager(new LinearLayoutManager(this));
-
     }
-
 
 }

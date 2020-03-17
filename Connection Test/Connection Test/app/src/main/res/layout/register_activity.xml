@@ -49,7 +49,7 @@
         android:hint="Phone Number"
         android:inputType="number" />
 
-    <EditText
+    <AutoCompleteTextView
         android:id="@+id/school"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -76,6 +76,7 @@
         android:layout_height="wrap_content"
         android:hint="Register"
         android:onClick="signUpProcess" />
+
 
 </LinearLayout>
 
