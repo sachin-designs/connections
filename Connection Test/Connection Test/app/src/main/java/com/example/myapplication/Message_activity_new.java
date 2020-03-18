@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -19,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -42,6 +44,8 @@ public class Message_activity_new extends AppCompatActivity {
     DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     ArrayList<Message_ref> lmessages = new ArrayList<>();
     private NotificationManagerCompat notificationManager;
+    String connect_username;
+    String message_ref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +53,6 @@ public class Message_activity_new extends AppCompatActivity {
         setContentView(R.layout.message_activity);
         Log.d("DB","inside new message activity");
         notificationManager = NotificationManagerCompat.from(this);
-        Date date = new Date();
         Intent intent=getIntent();
         user= (Users) intent.getSerializableExtra("Object");
         Log.d("DB","Hey connector "+user.username);
@@ -63,14 +66,79 @@ public class Message_activity_new extends AppCompatActivity {
         send_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(msg.getText().toString()!=null) {
+                if(!msg.getText().toString().equals(null)) {
                     create_message_ref();
                 }
             }
         });
 
+        databaseRef_msg=FirebaseDatabase.getInstance().getReference().child("Messages");
+        databaseRef_msg.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String msg_ref) {
+                Log.d("DB", "key"+" "+dataSnapshot.getKey());
+                String S_ref=dataSnapshot.getKey();
+               Message_ref msg_obj =dataSnapshot.child(message_ref).getValue(Message_ref.class);
+                Log.d("DB", "Data2"+" "+msg_obj.Message);
+                //checkNotification(S_ref);
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
     }
 
+    public void checkNotification(String sref) {
+
+        databaseRef_msg=FirebaseDatabase.getInstance().getReference().child("Messages").child(sref);
+        databaseRef_msg.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String msg_ref) {
+                Log.d("DB", "Data2"+" "+dataSnapshot.getKey());
+                String S_ref=dataSnapshot.getKey();
+                checkNotification(S_ref);
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
     public void fetch_user(final Users user) {
         Log.d("DB","Inside fetch user");
         // message = msg.getText().toString();
@@ -134,11 +202,8 @@ public class Message_activity_new extends AppCompatActivity {
                     for (DataSnapshot data : dataSnapshot.getChildren()) {
                         // do something with the individual "issues"
                         Message_ref msg = data.getValue(Message_ref.class);
-                        Log.d("DB","Got my msg"+msg.Message);
                         //connect_view.append(user.username+",");
                         lmessages.add(msg);
-                        getNotify(msg);
-
                     }
                     message_adapter(lmessages);
                 }else{
@@ -155,9 +220,11 @@ public class Message_activity_new extends AppCompatActivity {
 
     }
 
+
+
     public void message_adapter(ArrayList<Message_ref> lmessages) {
         RecyclerView rv = (RecyclerView) findViewById(R.id.message_box);
-        String connect_username=user.username;
+         connect_username=user.username;
         MessageAdapter adapter = new MessageAdapter(lmessages,connect_username);
         // Attach the adapter to the recyclerview to populate items
         rv.setAdapter(adapter);
@@ -173,7 +240,7 @@ public class Message_activity_new extends AppCompatActivity {
         databaseRef_msg=FirebaseDatabase.getInstance().getReference().child("Messages").child(msg_ref);
         String message=msg.getText().toString();
         Date date = new Date();
-        String message_ref=dateFormat.format(date);
+        message_ref=dateFormat.format(date);
         String Message_user=Cuser_name;
         Message_ref mess_object= new Message_ref(message_ref,Message_user,message);
         databaseRef_msg.child(message_ref).setValue(mess_object);
@@ -201,15 +268,17 @@ public class Message_activity_new extends AppCompatActivity {
     }
 
     public void getNotify(Message_ref msg){
-        Notification notification = new NotificationCompat.Builder(this, Notification_Class.CHANNEL_1_ID)
-                .setSmallIcon(R.drawable.message)
-                .setContentTitle(msg.Message_user)
-                .setContentText(msg.Message)
-                .setVibrate(new long[] {2000})
-                .setSound(Settings.System.DEFAULT_NOTIFICATION_URI)
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setCategory(NotificationCompat.CATEGORY_MESSAGE)
-                .build();
-        notificationManager.notify(1, notification);
+        if(msg.Message_user.equals(connect_username)) {
+            Notification notification = new NotificationCompat.Builder(this, Notification_Class.CHANNEL_1_ID)
+                    .setSmallIcon(R.drawable.message)
+                    .setContentTitle(msg.Message_user)
+                    .setContentText(msg.Message)
+                    .setVibrate(new long[]{2000})
+                    .setSound(Settings.System.DEFAULT_NOTIFICATION_URI)
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+                    .build();
+            notificationManager.notify(1, notification);
+        }
     }
 }
