@@ -87,8 +87,8 @@ public class Message_activity_new extends AppCompatActivity {
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String msg_ref) {
                 Log.d("DB", "key"+" "+dataSnapshot.getKey());
-                Message_ref msg_obj =dataSnapshot.child(message_ref).getValue(Message_ref.class);
-                Log.d("DB", "Data2"+" "+msg_obj.Message);
+                String msg_obj ="got a message";
+                Log.d("DB", "Data2"+" "+msg_obj);
                 getNotify(msg_obj);
             }
 
@@ -236,12 +236,12 @@ public class Message_activity_new extends AppCompatActivity {
         msg_id.setText(user.username);
     }
 
-    public void getNotify(Message_ref msg){
+    public void getNotify(String msg){
 
             Notification notification = new NotificationCompat.Builder(this, Notification_Class.CHANNEL_1_ID)
                     .setSmallIcon(R.drawable.message)
-                    .setContentTitle(msg.Message_user)
-                    .setContentText(msg.Message)
+                    .setContentTitle("Message")
+                    .setContentText(msg)
                     .setVibrate(new long[]{2000})
                     .setSound(Settings.System.DEFAULT_NOTIFICATION_URI)
                     .setPriority(NotificationCompat.PRIORITY_HIGH)
@@ -259,9 +259,36 @@ public class Message_activity_new extends AppCompatActivity {
         super.onPause();
         Log.d("Activity", "onPause: ");
         Toast.makeText(getApplicationContext(),"onPause",Toast.LENGTH_SHORT).show();
-        while (true){
-            checkNotification();
-        }
+        databaseRef_msg=FirebaseDatabase.getInstance().getReference().child("Messages");
+        databaseRef_msg.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String msg_ref) {
+                Log.d("DB", "key"+" "+dataSnapshot.getKey());
+                String msg_obj ="got a message";
+                Log.d("DB", "Data2"+" "+msg_obj);
+                getNotify(msg_obj);
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
     public void onStop(){
         super.onStop();
