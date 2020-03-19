@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -68,10 +69,14 @@ public class Message_activity_new extends AppCompatActivity {
             public void onClick(View v) {
                 if(!msg.getText().toString().equals(null)) {
                     create_message_ref();
+                    checkNotification();
                 }
             }
         });
 
+    }
+
+    public void checkNotification() {
         databaseRef_msg=FirebaseDatabase.getInstance().getReference().child("Messages");
         databaseRef_msg.addChildEventListener(new ChildEventListener() {
             @Override
@@ -82,10 +87,9 @@ public class Message_activity_new extends AppCompatActivity {
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String msg_ref) {
                 Log.d("DB", "key"+" "+dataSnapshot.getKey());
-                String S_ref=dataSnapshot.getKey();
-               Message_ref msg_obj =dataSnapshot.child(message_ref).getValue(Message_ref.class);
+                Message_ref msg_obj =dataSnapshot.child(message_ref).getValue(Message_ref.class);
                 Log.d("DB", "Data2"+" "+msg_obj.Message);
-                //checkNotification(S_ref);
+                getNotify(msg_obj);
             }
 
             @Override
@@ -104,41 +108,8 @@ public class Message_activity_new extends AppCompatActivity {
             }
         });
 
-
     }
 
-    public void checkNotification(String sref) {
-
-        databaseRef_msg=FirebaseDatabase.getInstance().getReference().child("Messages").child(sref);
-        databaseRef_msg.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String msg_ref) {
-                Log.d("DB", "Data2"+" "+dataSnapshot.getKey());
-                String S_ref=dataSnapshot.getKey();
-                checkNotification(S_ref);
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
     public void fetch_user(final Users user) {
         Log.d("DB","Inside fetch user");
         // message = msg.getText().toString();
@@ -220,8 +191,6 @@ public class Message_activity_new extends AppCompatActivity {
 
     }
 
-
-
     public void message_adapter(ArrayList<Message_ref> lmessages) {
         RecyclerView rv = (RecyclerView) findViewById(R.id.message_box);
          connect_username=user.username;
@@ -268,7 +237,7 @@ public class Message_activity_new extends AppCompatActivity {
     }
 
     public void getNotify(Message_ref msg){
-        if(msg.Message_user.equals(connect_username)) {
+
             Notification notification = new NotificationCompat.Builder(this, Notification_Class.CHANNEL_1_ID)
                     .setSmallIcon(R.drawable.message)
                     .setContentTitle(msg.Message_user)
@@ -279,6 +248,25 @@ public class Message_activity_new extends AppCompatActivity {
                     .setCategory(NotificationCompat.CATEGORY_MESSAGE)
                     .build();
             notificationManager.notify(1, notification);
+    }
+
+    public void onDestroy() {
+        super.onDestroy();
+        Toast.makeText(getApplicationContext(),"onDestroy",Toast.LENGTH_SHORT).show();
+        Log.d("Activity", "onDestroy: ");
+    }
+    public void onPause(){
+        super.onPause();
+        Log.d("Activity", "onPause: ");
+        Toast.makeText(getApplicationContext(),"onPause",Toast.LENGTH_SHORT).show();
+        while (true){
+            checkNotification();
         }
     }
+    public void onStop(){
+        super.onStop();
+        Toast.makeText(getApplicationContext(),"onStop",Toast.LENGTH_SHORT).show();
+        Log.d("Activity", "onStop: ");
+    }
+
 }
