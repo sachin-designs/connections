@@ -1,6 +1,5 @@
 package com.example.myapplication;
 
-import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -21,9 +20,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
-import java.util.Timer;
-import java.util.TimerTask;
 
 public  class Service_class extends Service {
     DatabaseReference databaseRef_msg;
@@ -93,13 +89,42 @@ public  class Service_class extends Service {
         databaseRef_msg.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                Log.d("DB", "key"+" "+dataSnapshot.getKey());
+                databaseRef_msg.child(dataSnapshot.getKey()).addChildEventListener(new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                        Log.d("DB", "childchanged"+dataSnapshot.getValue());
+                        String msg_obj="Got a message";
+                        getNotify(msg_obj);
+                    }
+                    @Override
+                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                        Log.d("DB", "childchanged"+dataSnapshot.getValue());
+                        String msg_obj="Got a message";
+                        getNotify(msg_obj);
+                    }
+
+                    @Override
+                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+                    }
+
+                    @Override
+                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
             }
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String msg_ref) {
-                Log.d("DB", "key"+" "+dataSnapshot.getKey());
-                String msg_obj ="got a message";
-                Log.d("DB", "Data2"+" "+msg_obj);
-                getNotify(msg_obj);
+//                String msg_obj ="got a message";
+//                Log.d("DB", "Data2"+" "+dataSnapshot.getKey());
+//                String Key=dataSnapshot.getKey();
             }
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
@@ -114,6 +139,8 @@ public  class Service_class extends Service {
         );
         return Service.START_STICKY;
     }
+
+
 
     @Override
     public void onDestroy() {

@@ -80,7 +80,6 @@ public class Connectivity extends AppCompatActivity {
                 }else {
                     Log.d("DB","Data not exists for current user");
                 }
-
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
