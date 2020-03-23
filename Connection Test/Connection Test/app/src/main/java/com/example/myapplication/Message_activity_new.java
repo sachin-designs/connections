@@ -89,7 +89,7 @@ public class Message_activity_new extends AppCompatActivity {
                 Log.d("DB", "key"+" "+dataSnapshot.getKey());
                 String msg_obj ="got a message";
                 Log.d("DB", "Data2"+" "+msg_obj);
-                getNotify(msg_obj);
+                //getNotify(msg_obj);
             }
 
             @Override

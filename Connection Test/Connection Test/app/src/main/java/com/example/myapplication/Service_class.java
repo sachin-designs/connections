@@ -94,8 +94,9 @@ public  class Service_class extends Service {
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                         Log.d("DB", "childchanged"+dataSnapshot.getValue());
-                        String msg_obj="Got a message";
-                        getNotify(msg_obj);
+                        Message_ref msg_obj=dataSnapshot.getValue(Message_ref.class);
+                        Log.d("DB", "childchanged"+msg_obj.Message);
+                        getNotify(msg_obj.Message);
                     }
                     @Override
                     public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
