@@ -2,8 +2,10 @@ package com.example.myapplication;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
@@ -20,6 +22,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 public  class Service_class extends Service {
     DatabaseReference databaseRef_msg;
     NotificationManagerCompat notificationManager;
@@ -29,13 +34,14 @@ public  class Service_class extends Service {
 
     }
 
-    @SuppressLint("ServiceCast")
+    //@SuppressLint("ServiceCast")
     public void getNotify(String msg){
 //        Intent intent=new Intent(this,Message_activity_new.class);
 //        intent.putExtra("Message",msg);
 //        startActivity(intent);
        // notificationManager= (NotificationManagerCompat) getSystemService(NOTIFICATION_SERVICE);
-        Intent notificationIntent = new Intent(this, Message_activity_new.class);
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        Intent notificationIntent = new Intent(this, ChatActivity.class);
         PendingIntent pendingIntent =
                 PendingIntent.getActivity(this, 0, notificationIntent, 0);
         Notification notification = new NotificationCompat.Builder(getApplicationContext(), Notification_Class.CHANNEL_1_ID)
@@ -49,8 +55,16 @@ public  class Service_class extends Service {
                 .setAutoCancel(true)
                 .setOngoing(false)
                 .build();
-       // notificationManager.notify(1,notification);
-        startForeground(1, notification);
+       notificationManager.notify(0,notification);
+
+//        startForeground(1, notification);
+//        Timer timer = new Timer();
+//        timer.schedule(new TimerTask() {
+//            @Override
+//            public void run() {
+//        stopForeground(1);
+//            }
+//        },3000);
 
     }
 

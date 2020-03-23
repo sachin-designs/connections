@@ -51,11 +51,6 @@ public class Message_activity_new extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent=getIntent();
-        String Smsg = intent.getStringExtra("Message");
-        if(Smsg!=null){
-            getNotify(Smsg);
-        }
-        else {
             setContentView(R.layout.message_activity);
             Log.d("DB", "inside new message activity");
             notificationManager = NotificationManagerCompat.from(this);
@@ -78,7 +73,7 @@ public class Message_activity_new extends AppCompatActivity {
                     }
                 }
             });
-        }
+
     }
 
     public void checkNotification() {
