@@ -23,7 +23,7 @@ public class Notification_Class extends Application {
             NotificationChannel channel1 = new NotificationChannel(
                     CHANNEL_1_ID, "channel 1", NotificationManager.IMPORTANCE_HIGH);
             channel1.setDescription("From Channel 1");
-
+            channel1.setShowBadge(false);
             NotificationManager manager = getSystemService(NotificationManager.class);
             manager.createNotificationChannel(channel1);
 

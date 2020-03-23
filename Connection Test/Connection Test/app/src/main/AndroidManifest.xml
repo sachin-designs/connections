@@ -3,6 +3,7 @@
     package="com.example.myapplication">
 <uses-permission android:name="android.permission.INTERNET"/>
  <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <application
         android:name=".Notification_Class"
         android:allowBackup="true"
@@ -29,6 +30,7 @@
             android:screenOrientation="fullSensor"/>
         <activity android:name=".Message_activity_new"
             android:screenOrientation="fullSensor"/>
+        <service android:name=".Service_class"  />
     </application>
 
 </manifest>

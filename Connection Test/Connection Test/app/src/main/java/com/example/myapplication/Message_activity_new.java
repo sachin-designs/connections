@@ -3,7 +3,6 @@ package com.example.myapplication;
 import android.app.Notification;
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -51,29 +50,35 @@ public class Message_activity_new extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.message_activity);
-        Log.d("DB","inside new message activity");
-        notificationManager = NotificationManagerCompat.from(this);
         Intent intent=getIntent();
-        user= (Users) intent.getSerializableExtra("Object");
-        Log.d("DB","Hey connector "+user.username);
-        msg_id=(TextView)findViewById(R.id.message_id);
-        chat_box=(RecyclerView)findViewById(R.id.message_box);
-        msg=(TextInputEditText) findViewById(R.id.edit_message);
-        send_btn=(Button)findViewById(R.id.send);
-        set_chat_fields(user);
-        fetch_user(user);
-        check_message(Cuserid,connect_userid);
-        send_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(!msg.getText().toString().equals(null)) {
-                    create_message_ref();
-                    checkNotification();
-                }
-            }
-        });
+        String Smsg = intent.getStringExtra("Message");
+        if(Smsg!=null){
+            getNotify(Smsg);
+        }
+        else {
+            setContentView(R.layout.message_activity);
+            Log.d("DB", "inside new message activity");
+            notificationManager = NotificationManagerCompat.from(this);
 
+            user = (Users) intent.getSerializableExtra("Object");
+            Log.d("DB", "Hey connector " + user.username);
+            msg_id = (TextView) findViewById(R.id.message_id);
+            chat_box = (RecyclerView) findViewById(R.id.message_box);
+            msg = (TextInputEditText) findViewById(R.id.edit_message);
+            send_btn = (Button) findViewById(R.id.send);
+            set_chat_fields(user);
+            fetch_user(user);
+            check_message(Cuserid, connect_userid);
+            send_btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!msg.getText().toString().equals(null)) {
+                        create_message_ref();
+                        checkNotification();
+                    }
+                }
+            });
+        }
     }
 
     public void checkNotification() {
@@ -236,60 +241,59 @@ public class Message_activity_new extends AppCompatActivity {
         msg_id.setText(user.username);
     }
 
-    public void getNotify(String msg){
 
-            Notification notification = new NotificationCompat.Builder(this, Notification_Class.CHANNEL_1_ID)
+    public void getNotify(String msg){
+            Notification notification = new NotificationCompat.Builder(getApplicationContext(), Notification_Class.CHANNEL_1_ID)
                     .setSmallIcon(R.drawable.message)
                     .setContentTitle("Message")
                     .setContentText(msg)
                     .setVibrate(new long[]{2000})
-                    .setSound(Settings.System.DEFAULT_NOTIFICATION_URI)
                     .setPriority(NotificationCompat.PRIORITY_HIGH)
                     .setCategory(NotificationCompat.CATEGORY_MESSAGE)
                     .build();
             notificationManager.notify(1, notification);
     }
 
+    @Override
     public void onDestroy() {
         super.onDestroy();
         Toast.makeText(getApplicationContext(),"onDestroy",Toast.LENGTH_SHORT).show();
         Log.d("Activity", "onDestroy: ");
     }
+
+    @Override
     public void onPause(){
         super.onPause();
+        Intent i = new Intent(this,Service_class.class);
+        startService(i);
+        //stopService(i);
         Log.d("Activity", "onPause: ");
         Toast.makeText(getApplicationContext(),"onPause",Toast.LENGTH_SHORT).show();
-        databaseRef_msg=FirebaseDatabase.getInstance().getReference().child("Messages");
-        databaseRef_msg.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String msg_ref) {
-                Log.d("DB", "key"+" "+dataSnapshot.getKey());
-                String msg_obj ="got a message";
-                Log.d("DB", "Data2"+" "+msg_obj);
-                getNotify(msg_obj);
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
+//        databaseRef_msg=FirebaseDatabase.getInstance().getReference().child("Messages");
+//        databaseRef_msg.addChildEventListener(new ChildEventListener() {
+//            @Override
+//            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+//            }
+//            @Override
+//            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String msg_ref) {
+//                Log.d("DB", "key"+" "+dataSnapshot.getKey());
+//                String msg_obj ="got a message";
+//                Log.d("DB", "Data2"+" "+msg_obj);
+//                getNotify(msg_obj);
+//            }
+//            @Override
+//            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+//            }
+//            @Override
+//            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+//            }
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//            }
+//        });
     }
+
+    @Override
     public void onStop(){
         super.onStop();
         Toast.makeText(getApplicationContext(),"onStop",Toast.LENGTH_SHORT).show();
