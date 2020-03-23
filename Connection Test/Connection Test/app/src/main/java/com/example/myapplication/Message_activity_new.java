@@ -264,8 +264,8 @@ public class Message_activity_new extends AppCompatActivity {
     @Override
     public void onPause(){
         super.onPause();
-        Intent i = new Intent(this,Service_class.class);
-        startService(i);
+       //Intent i = new Intent(this,Service_class.class);
+       // startService(i);
         //stopService(i);
         Log.d("Activity", "onPause: ");
         Toast.makeText(getApplicationContext(),"onPause",Toast.LENGTH_SHORT).show();

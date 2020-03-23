@@ -30,7 +30,8 @@
             android:screenOrientation="fullSensor"/>
         <activity android:name=".Message_activity_new"
             android:screenOrientation="fullSensor"/>
-        <service android:name=".Service_class"  />
+        <service android:name=".Service_class"
+            android:enabled="true"/>
     </application>
 
 </manifest>

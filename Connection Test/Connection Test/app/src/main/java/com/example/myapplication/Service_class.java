@@ -34,7 +34,7 @@ public  class Service_class extends Service {
 //        Intent intent=new Intent(this,Message_activity_new.class);
 //        intent.putExtra("Message",msg);
 //        startActivity(intent);
-        notificationManager= (NotificationManagerCompat) getSystemService(NOTIFICATION_SERVICE);
+       // notificationManager= (NotificationManagerCompat) getSystemService(NOTIFICATION_SERVICE);
         Intent notificationIntent = new Intent(this, Message_activity_new.class);
         PendingIntent pendingIntent =
                 PendingIntent.getActivity(this, 0, notificationIntent, 0);
@@ -49,7 +49,9 @@ public  class Service_class extends Service {
                 .setAutoCancel(true)
                 .setOngoing(false)
                 .build();
-        notificationManager.notify(1,notification);
+       // notificationManager.notify(1,notification);
+        startForeground(1, notification);
+
     }
 
 
@@ -83,7 +85,7 @@ public  class Service_class extends Service {
                 Log.d("DB", "key"+" "+dataSnapshot.getKey());
                 String msg_obj ="got a message";
                 Log.d("DB", "Data2"+" "+msg_obj);
-                //getNotify(msg_obj);
+                getNotify(msg_obj);
             }
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
@@ -96,7 +98,7 @@ public  class Service_class extends Service {
             }
         }
         );
-        return super.onStartCommand(intent, flags, startId);
+        return Service.START_STICKY;
     }
 
     @Override
