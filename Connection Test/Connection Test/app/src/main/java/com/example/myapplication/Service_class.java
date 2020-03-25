@@ -15,6 +15,8 @@ import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -26,6 +28,7 @@ public  class Service_class extends Service {
     NotificationManagerCompat notificationManager;
     String msgKey;
     String timeKey;
+    String cuserid;
 
     public Service_class(){
 
@@ -100,7 +103,9 @@ public  class Service_class extends Service {
                         timeKey = dataSnapshot.getKey();
                         Message_ref msg_obj=dataSnapshot.getValue(Message_ref.class);
                         Log.d("DB", "childchanged"+msg_obj.Message);
-                        if(!msg_obj.status){
+                        FirebaseUser currentuserinstance= FirebaseAuth.getInstance().getCurrentUser();
+                        cuserid=currentuserinstance.getUid();
+                        if(!msg_obj.status && msg_obj.CoUser.equals(cuserid)){
                         getNotify(msg_obj.Message, msg_obj.Message_user);
                         databaseRef_msg.child(msgKey).child(timeKey).child("status").setValue(true);
                         }
