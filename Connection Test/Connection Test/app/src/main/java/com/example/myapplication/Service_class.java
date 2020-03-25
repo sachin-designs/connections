@@ -24,14 +24,15 @@ import com.google.firebase.database.FirebaseDatabase;
 public  class Service_class extends Service {
     DatabaseReference databaseRef_msg;
     NotificationManagerCompat notificationManager;
-
+    String msgKey;
+    String timeKey;
 
     public Service_class(){
 
     }
 
     //@SuppressLint("ServiceCast")
-    public void getNotify(String msg){
+    public void getNotify(String msg, String user){
 //        Intent intent=new Intent(this,Message_activity_new.class);
 //        intent.putExtra("Message",msg);
 //        startActivity(intent);
@@ -42,7 +43,7 @@ public  class Service_class extends Service {
                 PendingIntent.getActivity(this, 0, notificationIntent, 0);
         Notification notification = new NotificationCompat.Builder(getApplicationContext(), Notification_Class.CHANNEL_1_ID)
                 .setSmallIcon(R.drawable.message)
-                .setContentTitle("Message")
+                .setContentTitle(user)
                 .setContentText(msg)
                 .setVibrate(new long[]{2000})
                 .setContentIntent(pendingIntent)
@@ -90,19 +91,25 @@ public  class Service_class extends Service {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Log.d("DB", "key"+" "+dataSnapshot.getKey());
+                msgKey = dataSnapshot.getKey();
                 databaseRef_msg.child(dataSnapshot.getKey()).addChildEventListener(new ChildEventListener() {
+
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                         Log.d("DB", "childchanged"+dataSnapshot.getValue());
+                        timeKey = dataSnapshot.getKey();
                         Message_ref msg_obj=dataSnapshot.getValue(Message_ref.class);
                         Log.d("DB", "childchanged"+msg_obj.Message);
-                        getNotify(msg_obj.Message);
+                        if(!msg_obj.status){
+                        getNotify(msg_obj.Message, msg_obj.Message_user);
+                        databaseRef_msg.child(msgKey).child(timeKey).child("status").setValue(true);
+                        }
                     }
                     @Override
                     public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                         Log.d("DB", "childchanged"+dataSnapshot.getValue());
-                        String msg_obj="Got a message";
-                        getNotify(msg_obj);
+//                        String msg_obj="Got a message";
+//                        getNotify(msg_obj);
                     }
 
                     @Override

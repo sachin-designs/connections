@@ -20,16 +20,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".RegisterActivity"
-            android:screenOrientation="fullSensor" />
-        <activity android:name=".ChatActivity"
-            android:screenOrientation="fullSensor"/>
+            android:name=".RegisterActivity" />
+        <activity android:name=".ChatActivity"/>
         <activity android:name=".MainActivity"
             android:label="Login"/>
-        <activity android:name=".Connectivity"
-            android:screenOrientation="fullSensor"/>
-        <activity android:name=".Message_activity_new"
-            android:screenOrientation="fullSensor"/>
+        <activity android:name=".Connectivity" />
+        <activity android:name=".Message_activity_new" />
         <service android:name=".Service_class"
             android:enabled="true"/>
     </application>

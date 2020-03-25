@@ -211,7 +211,7 @@ public class Message_activity_new extends AppCompatActivity {
         Date date = new Date();
         message_ref=dateFormat.format(date);
         String Message_user=Cuser_name;
-        Message_ref mess_object= new Message_ref(message_ref,Message_user,message);
+        Message_ref mess_object= new Message_ref(message_ref,Message_user,message,false, connect_userid);
         databaseRef_msg.child(message_ref).setValue(mess_object);
         Log.d("DB", "message obj:"+msg_ref);
         databaseRef_msg = FirebaseDatabase.getInstance().getReference().child("Msg_refs");
