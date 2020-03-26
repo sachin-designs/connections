@@ -95,12 +95,15 @@ public  class Service_class extends Service {
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Log.d("DB", "key"+" "+dataSnapshot.getKey());
                 msgKey = dataSnapshot.getKey();
-                databaseRef_msg.child(dataSnapshot.getKey()).addChildEventListener(new ChildEventListener() {
+                Log.d("Servie", msgKey);
+                databaseRef_msg.child(msgKey).addChildEventListener(new ChildEventListener() {
 
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                         Log.d("DB", "childchanged"+dataSnapshot.getValue());
                         timeKey = dataSnapshot.getKey();
+                        String msgKey =dataSnapshot.getRef().getParent().getKey();
+                        Log.d("Servie", timeKey);
                         Message_ref msg_obj=dataSnapshot.getValue(Message_ref.class);
                         Log.d("DB", "childchanged"+msg_obj.Message);
                         FirebaseUser currentuserinstance= FirebaseAuth.getInstance().getCurrentUser();
@@ -135,9 +138,48 @@ public  class Service_class extends Service {
             }
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String msg_ref) {
-//                String msg_obj ="got a message";
-//                Log.d("DB", "Data2"+" "+dataSnapshot.getKey());
-//                String Key=dataSnapshot.getKey();
+                Log.d("DB", "key"+" "+dataSnapshot.getKey());
+                msgKey = dataSnapshot.getKey();
+                Log.d("Servie", msgKey);
+                databaseRef_msg.child(msgKey).addChildEventListener(new ChildEventListener() {
+
+                    @Override
+                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                        Log.d("DB", "childchanged"+dataSnapshot.getValue());
+                        timeKey = dataSnapshot.getKey();
+                        String msgKey =dataSnapshot.getRef().getParent().getKey();
+                        Log.d("Servie", timeKey);
+                        Message_ref msg_obj=dataSnapshot.getValue(Message_ref.class);
+                        Log.d("DB", "childchanged"+msg_obj.Message);
+                        FirebaseUser currentuserinstance= FirebaseAuth.getInstance().getCurrentUser();
+                        cuserid=currentuserinstance.getUid();
+                        if(!msg_obj.status && msg_obj.CoUser.equals(cuserid)){
+                            getNotify(msg_obj.Message, msg_obj.Message_user);
+                            databaseRef_msg.child(msgKey).child(timeKey).child("status").setValue(true);
+                        }
+                    }
+                    @Override
+                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                        Log.d("DB", "childchanged"+dataSnapshot.getValue());
+//                        String msg_obj="Got a message";
+//                        getNotify(msg_obj);
+                    }
+
+                    @Override
+                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+                    }
+
+                    @Override
+                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
             }
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
@@ -158,8 +200,108 @@ public  class Service_class extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Toast.makeText(getApplicationContext(),"on service destroy",Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(),"on destroy command",Toast.LENGTH_SHORT).show();
         Log.d("Service", "on destroy: ");
+        databaseRef_msg.addChildEventListener(new ChildEventListener() {
+                                                  @Override
+                                                  public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                                                      Log.d("DB", "key"+" "+dataSnapshot.getKey());
+                                                      msgKey = dataSnapshot.getKey();
+                                                      Log.d("Servie", msgKey);
+                                                      databaseRef_msg.child(msgKey).addChildEventListener(new ChildEventListener() {
+
+                                                          @Override
+                                                          public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                                                              Log.d("DB", "childchanged"+dataSnapshot.getValue());
+                                                              timeKey = dataSnapshot.getKey();
+                                                              String msgKey =dataSnapshot.getRef().getParent().getKey();
+                                                              Log.d("Servie", timeKey);
+                                                              Message_ref msg_obj=dataSnapshot.getValue(Message_ref.class);
+                                                              Log.d("DB", "childchanged"+msg_obj.Message);
+                                                              FirebaseUser currentuserinstance= FirebaseAuth.getInstance().getCurrentUser();
+                                                              cuserid=currentuserinstance.getUid();
+                                                              if(!msg_obj.status && msg_obj.CoUser.equals(cuserid)){
+                                                                  getNotify(msg_obj.Message, msg_obj.Message_user);
+                                                                  databaseRef_msg.child(msgKey).child(timeKey).child("status").setValue(true);
+                                                              }
+                                                          }
+                                                          @Override
+                                                          public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                                                              Log.d("DB", "childchanged"+dataSnapshot.getValue());
+
+                                                          }
+
+                                                          @Override
+                                                          public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+                                                          }
+
+                                                          @Override
+                                                          public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                                                          }
+
+                                                          @Override
+                                                          public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                                          }
+                                                      });
+                                                  }
+                                                  @Override
+                                                  public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String msg_ref) {
+                                                      Log.d("DB", "key"+" "+dataSnapshot.getKey());
+                                                      msgKey = dataSnapshot.getKey();
+                                                      Log.d("Servie", msgKey);
+                                                      databaseRef_msg.child(msgKey).addChildEventListener(new ChildEventListener() {
+
+                                                          @Override
+                                                          public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                                                              Log.d("DB", "childchanged"+dataSnapshot.getValue());
+                                                              timeKey = dataSnapshot.getKey();
+                                                              String msgKey =dataSnapshot.getRef().getParent().getKey();
+                                                              Log.d("Servie", timeKey);
+                                                              Message_ref msg_obj=dataSnapshot.getValue(Message_ref.class);
+                                                              Log.d("DB", "childchanged"+msg_obj.Message);
+                                                              FirebaseUser currentuserinstance= FirebaseAuth.getInstance().getCurrentUser();
+                                                              cuserid=currentuserinstance.getUid();
+                                                              if(!msg_obj.status && msg_obj.CoUser.equals(cuserid)){
+                                                                  getNotify(msg_obj.Message, msg_obj.Message_user);
+                                                                  databaseRef_msg.child(msgKey).child(timeKey).child("status").setValue(true);
+                                                              }
+                                                          }
+                                                          @Override
+                                                          public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                                                              Log.d("DB", "childchanged"+dataSnapshot.getValue());
+
+                                                          }
+
+                                                          @Override
+                                                          public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+                                                          }
+
+                                                          @Override
+                                                          public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                                                          }
+
+                                                          @Override
+                                                          public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                                          }
+                                                      });
+                                                  }
+                                                  @Override
+                                                  public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                                                  }
+                                                  @Override
+                                                  public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                                                  }
+                                                  @Override
+                                                  public void onCancelled(@NonNull DatabaseError databaseError) {
+                                                  }
+                                              }
+        );
 
     }
 }
