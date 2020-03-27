@@ -77,7 +77,12 @@ public class RegisterActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.register_activity);
+        tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         // Initialize the SDK
+        if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(RegisterActivity.this, new String[]{Manifest.permission.READ_PHONE_STATE}, REQUEST_CODE);
+            return;
+        }
 
         // Start the autocomplete intent.
         school = (AutoCompleteTextView) findViewById(R.id.school);
@@ -234,10 +239,10 @@ public class RegisterActivity extends AppCompatActivity {
         } else {
             user = mAuth.getCurrentUser();
             Uid = user.getUid();
-
-            Users users = new Users(gname,sPassword, sPhNumber, gmail, sPlace, sSchool, sWork, Uid, tm.getDeviceId());
-        databaseRef.child(Uid).setValue(users);
-        switchActivity();
+            String IMEI= tm.getDeviceId();
+            Users users = new Users(sUsername,sPassword, sPhNumber, gmail, sPlace, sSchool, sWork, Uid, IMEI);
+            databaseRef.child(Uid).setValue(users);
+            switchActivity();
     }
     }
 
