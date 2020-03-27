@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -52,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
     TelephonyManager tm;
     private static final int REQUEST_CODE = 101;
     DatabaseReference dref;
-    String IMEI;
+    String IMEI,IMEI_check;
 
     private static final int RC_SIGN_IN = 234;
 
@@ -62,7 +63,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         databaseRef = FirebaseDatabase.getInstance().getReference().child("Register");
         mAuth = FirebaseAuth.getInstance();
-
+        tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        // Initialize the SDK
+        if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.READ_PHONE_STATE}, REQUEST_CODE);
+            return;
+        }
+        IMEI_check=tm.getDeviceId();
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -159,6 +166,10 @@ public class MainActivity extends AppCompatActivity {
                                         } else {
                                             //TODO: Develop a POP-UP option for Unique Key
                                             Toast.makeText(getApplicationContext(),"Multiple accnt",Toast.LENGTH_LONG).show();
+                                            Intent intent = new Intent(MainActivity.this, FirstActivity.class);
+                                            Log.d("DB", "inside mutli acct");
+                                            finish();
+                                            startActivity(intent);
                                         }
                                         Log.d("DB", "exists");
                                     } else {
@@ -265,10 +276,7 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Users user = dataSnapshot.getValue(Users.class);
                 IMEI = user.IMEI;
-                if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.READ_PHONE_STATE}, REQUEST_CODE);
-                    return;
-                }
+
             }
 
             @Override
@@ -276,8 +284,8 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
-        if (IMEI.equals(tm.getDeviceId())){
+        tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        if (IMEI.equals(IMEI_check)){
             return true;
         }else{
             return false;
