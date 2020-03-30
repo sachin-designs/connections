@@ -7,7 +7,9 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -17,6 +19,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
@@ -51,7 +54,7 @@ public class RegisterActivity extends AppCompatActivity {
     AutoCompleteTextView school;
     EditText place;
     EditText work;
-    String apiKey="AIzaSyACIKN3ZBXgkkgKq53BrinWaFsOyB-AVyE";
+    String apiKey = "AIzaSyACIKN3ZBXgkkgKq53BrinWaFsOyB-AVyE";
     private FirebaseAuth mAuth;
     private DatabaseReference databaseRef;
     Button b;
@@ -69,20 +72,29 @@ public class RegisterActivity extends AppCompatActivity {
     Double longitude;
     Double latitude;
     ArrayList<String> schools = new ArrayList<String>();
+    TelephonyManager tm;
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-          setContentView(R.layout.register_activity);
+        setContentView(R.layout.register_activity);
+        tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         // Initialize the SDK
+
+        if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(RegisterActivity.this, new String[]{Manifest.permission.READ_PHONE_STATE}, REQUEST_CODE);
+            return;
+        }
 
         // Start the autocomplete intent.
         school = (AutoCompleteTextView) findViewById(R.id.school);
         school.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String schoolText=school.getText().toString();
-                schools=autocompletebuilder(schoolText);
+                String schoolText = school.getText().toString();
+                schools = autocompletebuilder(schoolText);
 
             }
         });
@@ -128,8 +140,8 @@ public class RegisterActivity extends AppCompatActivity {
                 String id = prediction.getPlaceId();
 
                 String name = prediction.getPrimaryText(null).toString();
-                Log.d("DB","data1"+id);
-                Log.d("DB","data"+name);
+                Log.d("DB", "data1" + id);
+                Log.d("DB", "data" + name);
                 schools.add(name);
             }
         }).addOnFailureListener((exception) -> {
@@ -138,10 +150,10 @@ public class RegisterActivity extends AppCompatActivity {
                 Log.d("DB", "Place not found: " + apiException.getStatusCode());
             }
         });
-        Log.d("DB", "autocompletebuilder:"+schools);
+        Log.d("DB", "autocompletebuilder:" + schools);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_dropdown_item_1line, schools);
-        Log.d("DB", "autocompletebuilder:"+school.getThreshold());
+        Log.d("DB", "autocompletebuilder:" + school.getThreshold());
         school.setAdapter(adapter);
         return schools;
     }
@@ -163,12 +175,13 @@ public class RegisterActivity extends AppCompatActivity {
             }
         }
     }
+
     // onResume() lifecycle callback:
     @Override
     protected void onResume() {
         super.onResume();
         Log.d("DB", "onResume() called");
-        if(mUseLocation) locationcurrent();
+        if (mUseLocation) locationcurrent();
     }
 
 
@@ -192,42 +205,48 @@ public class RegisterActivity extends AppCompatActivity {
         final String sWork = work.getText().toString();
         b = findViewById(R.id.button);
 
-         mAuth = FirebaseAuth.getInstance();
+        mAuth = FirebaseAuth.getInstance();
 
         databaseRef = FirebaseDatabase.getInstance().getReference().child("Register");
-       // final String Uid = databaseRef.push().getKey();
+        // final String Uid = databaseRef.push().getKey();
         SessionManagement obj = new SessionManagement(RegisterActivity.this);
-        Log.d("DB","session_object"+obj.getGaccnt_gmail());
-    if(gmail.isEmpty()) {
-        mAuth.createUserWithEmailAndPassword(sEmail, sPassword)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            Log.d("TAG", "usercreated");
-                            user = mAuth.getCurrentUser();
-                            Uid = user.getUid();
-                            Users users = new Users(sUsername, sPassword, sPhNumber, sEmail, sPlace, sSchool, sWork, Uid);
-                            databaseRef.child(Uid).setValue(users);
-                            Toast.makeText(RegisterActivity.this, "Authentication success.",
-                                    Toast.LENGTH_LONG).show();
-                            SessionManagement obj = new SessionManagement(RegisterActivity.this);
-                            obj.setName(sEmail);
-                            switchActivity();
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.d("TAG", "createUserWithEmail:failure");
-                            Toast.makeText(RegisterActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
+        Log.d("DB", "session_object" + obj.getGaccnt_gmail());
+
+        if (gmail.isEmpty()) {
+            mAuth.createUserWithEmailAndPassword(sEmail, sPassword)
+                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                Log.d("TAG", "usercreated");
+                                user = mAuth.getCurrentUser();
+                                Uid = user.getUid();
+                                if (ActivityCompat.checkSelfPermission(RegisterActivity.this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+                                    ActivityCompat.requestPermissions(RegisterActivity.this, new String[]{Manifest.permission.READ_PHONE_STATE}, REQUEST_CODE);
+                                    return;
+                                }
+                                Users users = new Users(sUsername, sPassword, sPhNumber, sEmail, sPlace, sSchool, sWork, Uid, tm.getDeviceId());
+                                databaseRef.child(Uid).setValue(users);
+                                Toast.makeText(RegisterActivity.this, "Authentication success.",
+                                        Toast.LENGTH_LONG).show();
+                                SessionManagement obj = new SessionManagement(RegisterActivity.this);
+                                obj.setName(sEmail);
+                                switchActivity();
+                            } else {
+                                // If sign in fails, display a message to the user.
+                                Log.d("TAG", "createUserWithEmail:failure");
+                                Toast.makeText(RegisterActivity.this, "Authentication failed.",
+                                        Toast.LENGTH_SHORT).show();
+                            }
                         }
-                    }
-                });
-    }else{
-        user = mAuth.getCurrentUser();
-        Uid = user.getUid();
-        Users users = new Users(gname,sPhNumber, gmail, sPlace, sSchool, sWork, Uid);
-        databaseRef.child(Uid).setValue(users);
-        switchActivity();
+                    });
+        } else {
+            user = mAuth.getCurrentUser();
+            Uid = user.getUid();
+            String IMEI= tm.getDeviceId();
+            Users users = new Users(sUsername,sPassword, sPhNumber, gmail, sPlace, sSchool, sWork, Uid, IMEI);
+            databaseRef.child(Uid).setValue(users);
+            switchActivity();
     }
     }
 
