@@ -1,13 +1,13 @@
 package com.example.myapplication;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -33,13 +33,14 @@ public class OtpActivity extends AppCompatActivity {
     EditText otp;
     EditText phno;
     String OTP,Phone_no;
+    boolean otp_successfull;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_otp);
 
-        b = (Button) findViewById(R.id.button2);
+        b = (Button) findViewById(R.id.get_otp);
         otp = (EditText) findViewById(R.id.textView2);
         phno = (EditText) findViewById(R.id.editText);
 
@@ -50,13 +51,13 @@ public class OtpActivity extends AppCompatActivity {
                  OTP = otp.getText().toString();
                  Phone_no = phno.getText().toString();
 
-                if(OTP != null && Phone_no != null){
-
-
+                if(Phone_no != null){
+                    startPhoneNumberVerification(Phone_no);
                 }
 
             }
         });
+
 
         mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
 
@@ -100,31 +101,41 @@ public class OtpActivity extends AppCompatActivity {
                 // by combining the code with a verification ID.
                 Log.d("DB", "onCodeSent:" + verificationId);
 
-                PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verificationId, OTP);
-
                 // Save verification ID and resending token so we can use them later
                 mVerificationId = verificationId;
                 mResendToken = token;
+                otp_successfull=true;
 
                 // ...
             }
         };
 
-        PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                phoneNumber,        // Phone number to verify
-                60,                 // Timeout duration
-                TimeUnit.SECONDS,   // Unit of timeout
-                this,               // Activity (for callback binding)
-                mCallbacks);        // OnVerificationStateChangedCallbacks
 
         FirebaseAuth auth = FirebaseAuth.getInstance();
         auth.setLanguageCode("fr");
 // To apply the default app language instead of explicitly setting it.
 // auth.useAppLanguage();
 
-
-
     }
+
+    public void check_otp(View v) {
+        if(otp.getText().toString()!=null && otp_successfull){
+            // [START verify_with_code]
+            PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId, otp.getText().toString());
+            // [END verify_with_code]
+            signInWithPhoneAuthCredential(credential);
+        }
+    }
+
+    public void startPhoneNumberVerification(String phone_no) {
+        PhoneAuthProvider.getInstance().verifyPhoneNumber(
+                phone_no,        // Phone number to verify
+                60,                 // Timeout duration
+                TimeUnit.SECONDS,   // Unit of timeout
+                this,               // Activity (for callback binding)
+                mCallbacks);        // OnVerificationStateChangedCallbacks
+    }
+
     public void otp(){
         String phoneNum = "+16505554567";
         String testVerificationCode = "123456";
@@ -142,7 +153,7 @@ public class OtpActivity extends AppCompatActivity {
                         // ...
 
                         // The corresponding whitelisted code above should be used to complete sign-in.
-                        OtpActivity.this.enableUserManuallyInputCode();
+                        //OtpActivity.this.enableUserManuallyInputCode();
                     }
 
                     @Override

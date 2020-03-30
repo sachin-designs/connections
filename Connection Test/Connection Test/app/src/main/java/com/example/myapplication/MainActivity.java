@@ -23,7 +23,6 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -114,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 Log.d("DB","result for gmailaccount-"+account);
                 firebaseAuthWithGoogle(account);
+
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
                 Log.d("DB", "Google sign in failed", e);
@@ -227,6 +227,11 @@ public class MainActivity extends AppCompatActivity {
         Log.d("DB","intent"+intent);
         intent.putExtra("name", sEmail);
         finish();
+        startActivity(intent);
+    }
+
+    public void switch_opt_activity(View v){
+        Intent intent = new Intent(MainActivity.this, OtpActivity.class);
         startActivity(intent);
     }
 
