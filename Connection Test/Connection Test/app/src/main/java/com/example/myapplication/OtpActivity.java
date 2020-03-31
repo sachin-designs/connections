@@ -9,14 +9,9 @@ import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseException;
-import com.google.firebase.FirebaseTooManyRequestsException;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
-import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.FirebaseAuthSettings;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 
@@ -59,6 +54,7 @@ public class OtpActivity extends AppCompatActivity {
         });
 
 
+
         mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
 
             @Override
@@ -71,22 +67,22 @@ public class OtpActivity extends AppCompatActivity {
                 //     user action.
                 Log.d("DB", "onVerificationCompleted:" + credential);
 
-                signInWithPhoneAuthCredential(credential);
+              //  signInWithPhoneAuthCredential(credential);
             }
 
             @Override
             public void onVerificationFailed(FirebaseException e) {
                 // This callback is invoked in an invalid request for verification is made,
                 // for instance if the the phone number format is not valid.
-                Log.d("DB", "onVerificationFailed", e);
-
-                if (e instanceof FirebaseAuthInvalidCredentialsException) {
-                    // Invalid request
-                    // ...
-                } else if (e instanceof FirebaseTooManyRequestsException) {
-                    // The SMS quota for the project has been exceeded
-                    // ...
-                }
+                Log.d("DB", "onVerificationFailed"+"failed");
+//
+//                if (e instanceof FirebaseAuthInvalidCredentialsException) {
+//                    // Invalid request
+//                    // ...
+//                } else if (e instanceof FirebaseTooManyRequestsException) {
+//                    // The SMS quota for the project has been exceeded
+//                    // ...
+//                }
 
                 // Show a message and update the UI
                 // ...
@@ -100,7 +96,6 @@ public class OtpActivity extends AppCompatActivity {
                 // now need to ask the user to enter the code and then construct a credential
                 // by combining the code with a verification ID.
                 Log.d("DB", "onCodeSent:" + verificationId);
-
                 // Save verification ID and resending token so we can use them later
                 mVerificationId = verificationId;
                 mResendToken = token;
@@ -123,11 +118,21 @@ public class OtpActivity extends AppCompatActivity {
             // [START verify_with_code]
             PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId, otp.getText().toString());
             // [END verify_with_code]
-            signInWithPhoneAuthCredential(credential);
+            //signInWithPhoneAuthCredential(credential);
         }
     }
 
     public void startPhoneNumberVerification(String phone_no) {
+        // The test phone number and code should be whitelisted in the console.
+        String phoneNumber = phone_no;
+        String smsCode = "111111";
+
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseAuthSettings firebaseAuthSettings = firebaseAuth.getFirebaseAuthSettings();
+
+// Configure faking the auto-retrieval with the whitelisted numbers.
+        firebaseAuthSettings.setAutoRetrievedSmsCodeForPhoneNumber(phoneNumber, smsCode);
+
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
                 phone_no,        // Phone number to verify
                 60,                 // Timeout duration
@@ -136,60 +141,61 @@ public class OtpActivity extends AppCompatActivity {
                 mCallbacks);        // OnVerificationStateChangedCallbacks
     }
 
-    public void otp(){
-        String phoneNum = "+16505554567";
-        String testVerificationCode = "123456";
-
-// Whenever verification is triggered with the whitelisted number,
-// provided it is not set for auto-retrieval, onCodeSent will be triggered.
-        PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                phoneNum, 30L /*timeout*/, TimeUnit.SECONDS,
-                this, new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-
-                    @Override
-                    public void onCodeSent(String verificationId,
-                                           PhoneAuthProvider.ForceResendingToken forceResendingToken) {
-                        // Save the verification id somewhere
-                        // ...
-
-                        // The corresponding whitelisted code above should be used to complete sign-in.
-                        //OtpActivity.this.enableUserManuallyInputCode();
-                    }
-
-                    @Override
-                    public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
-                        // Sign in with the credential
-                        // ...
-                    }
-
-                    @Override
-                    public void onVerificationFailed(FirebaseException e) {
-                        // ...
-                    }
-
-                });
-
-    }
+//    public void otp(){
+//        String phoneNum = "+16505554567";
+//        String testVerificationCode = "123456";
+//
+//// Whenever verification is triggered with the whitelisted number,
+//// provided it is not set for auto-retrieval, onCodeSent will be triggered.
+//        PhoneAuthProvider.getInstance().verifyPhoneNumber(
+//                phoneNum, 30L /*timeout*/, TimeUnit.SECONDS,
+//                this, new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+//
+//                    @Override
+//                    public void onCodeSent(String verificationId,
+//                                           PhoneAuthProvider.ForceResendingToken forceResendingToken) {
+//                        // Save the verification id somewhere
+//                        // ...
+//
+//                        // The corresponding whitelisted code above should be used to complete sign-in.
+//                        //OtpActivity.this.enableUserManuallyInputCode();
+//                    }
+//
+//                    @Override
+//                    public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
+//                        // Sign in with the credential
+//                        // ...
+//                    }
+//
+//                    @Override
+//                    public void onVerificationFailed(FirebaseException e) {
+//                        // ...
+//                    }
+//
+//                });
+//
+//    }
 
     private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
         mAuth = FirebaseAuth.getInstance();
-        mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d("DB", "signInWithCredential:success");
-                            FirebaseUser user = task.getResult().getUser();
-                            // ...
-                        } else {
-                            // Sign in failed, display a message and update the UI
-                            Log.d("DB", "signInWithCredential:failure", task.getException());
-                            if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
-                                // The verification code entered was invalid
-                            }
-                        }
-                    }
-                });
-    }
+        Log.d("DB", "signInWithCredential:success");
+//        mAuth.signInWithCredential(credential)
+//                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<AuthResult> task) {
+//                        if (task.isSuccessful()) {
+//                            // Sign in success, update UI with the signed-in user's information
+//                            Log.d("DB", "signInWithCredential:success");
+//                            FirebaseUser user = task.getResult().getUser();
+//                            // ...
+//                        } else {
+//                            // Sign in failed, display a message and update the UI
+//                            Log.d("DB", "signInWithCredential:failure", task.getException());
+//                            if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
+//                                // The verification code entered was invalid
+//                            }
+//                        }
+//                    }
+//                });
+  }
 }
