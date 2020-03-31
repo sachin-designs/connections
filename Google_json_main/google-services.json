@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "195708142457",
+    "firebase_url": "https://connect-c2b60.firebaseio.com",
+    "project_id": "connect-c2b60",
+    "storage_bucket": "connect-c2b60.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:195708142457:android:1bfe90f5436411b33965a8",
+        "android_client_info": {
+          "package_name": "com.designs.connect"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "195708142457-eolv9ju71s1qafc391hgi7guifakk26t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC9IdtoK8aLzSDLU7If7aNqIpxpeATWWzo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "195708142457-eolv9ju71s1qafc391hgi7guifakk26t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
